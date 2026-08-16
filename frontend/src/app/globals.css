@@ -1,0 +1,89 @@
+@import "tailwindcss";
+
+:root {
+  --background: #FAF6F0; /* Ivory background */
+  --foreground: #2D2D2D; /* Charcoal text */
+  
+  --maroon-deep: #5B1A1A;
+  --gold-warm: #C9A84C;
+  --teal-deep: #1A4A4A;
+  --rose-soft: #E8B4B8;
+  --emerald-muted: #3D6B5E;
+  --midnight-blue: #1B2838;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  
+  --color-maroon-deep: var(--maroon-deep);
+  --color-gold-warm: var(--gold-warm);
+  --color-teal-deep: var(--teal-deep);
+  --color-rose-soft: var(--rose-soft);
+  --color-emerald-muted: var(--emerald-muted);
+  --color-midnight-blue: var(--midnight-blue);
+  
+  --font-serif: var(--font-playfair), Georgia, serif;
+  --font-sans: var(--font-inter), sans-serif;
+  --font-hindi: var(--font-devanagari), sans-serif;
+  --font-urdu: var(--font-nastaliq), serif;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+}
+
+/* Custom premium styles */
+.text-serif {
+  font-family: var(--font-serif);
+}
+
+.font-script {
+  font-family: var(--font-great-vibes), cursive;
+}
+
+.text-hindi {
+  font-family: var(--font-hindi);
+}
+
+.text-urdu {
+  font-family: var(--font-urdu);
+  direction: rtl;
+}
+
+/* Diagonal Preview Watermark */
+.watermark {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    rgba(201, 168, 76, 0.08) 0px,
+    rgba(201, 168, 76, 0.08) 100px,
+    rgba(91, 26, 26, 0.08) 100px,
+    rgba(91, 26, 26, 0.08) 200px
+  );
+}
+
+/* Custom animations */
+@keyframes spin-slow {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 30s linear infinite;
+}
+
+/* Glassmorphism utility */
+.glass {
+  background: rgba(250, 246, 240, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(201, 168, 76, 0.2);
+}
+
+.glass-dark {
+  background: rgba(45, 45, 45, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(201, 168, 76, 0.2);
+}

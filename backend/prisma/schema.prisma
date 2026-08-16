@@ -1,0 +1,187 @@
+// backend/prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  phone     String?  @unique
+  email     String?  @unique
+  name      String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  previews    Preview[]
+  orders      Order[]
+  invitations Invitation[]
+
+  @@map("users")
+}
+
+model Template {
+  id           String         @id @default(cuid())
+  name         String
+  slug         String         @unique
+  description  String?
+  occasionType OccasionType   @map("occasion_type")
+  cultureTag   CultureTag     @map("culture_tag")
+  regionTag    String?        @map("region_tag") // "punjabi", "south-indian", "bengali", etc.
+  schemaJson   Json           @map("schema_json") // Defines which fields this template needs
+  rendererRef  String         @map("renderer_ref") // Component name e.g. "hindu-royal-wedding"
+  thumbnailUrl String?        @map("thumbnail_url")
+  previewUrl   String?        @map("preview_url") // Short video/gif preview
+  price        Int            // Price in paise (e.g., 49900 = ₹499)
+  tier         PricingTier    @default(PREMIUM)
+  status       TemplateStatus @default(ACTIVE)
+  isFeatured   Boolean        @default(false) @map("is_featured")
+  isTrending   Boolean        @default(false) @map("is_trending")
+  isNew        Boolean        @default(true) @map("is_new")
+  version      Int            @default(1)
+  createdAt    DateTime       @default(now()) @map("created_at")
+  updatedAt    DateTime       @updatedAt @map("updated_at")
+
+  previews    Preview[]
+  invitations Invitation[]
+
+  @@index([occasionType, cultureTag])
+  @@index([status, isFeatured])
+  @@map("templates")
+}
+
+model Preview {
+  id         String        @id @default(cuid())
+  userId     String        @map("user_id")
+  templateId String        @map("template_id")
+  formData   Json          @map("form_data") // User-filled invitation data
+  token      String        @unique @default(cuid()) // Non-guessable preview URL token
+  expiresAt  DateTime      @map("expires_at")
+  viewCount  Int           @default(0) @map("view_count")
+  maxViews   Int           @default(10) @map("max_views")
+  status     PreviewStatus @default(ACTIVE)
+  createdAt  DateTime      @default(now()) @map("created_at")
+
+  user     User      @relation(fields: [userId], references: [id])
+  template Template  @relation(fields: [templateId], references: [id] )
+  order    Order?
+
+  @@index([token])
+  @@index([userId])
+  @@map("previews")
+}
+
+model Order {
+  id            String        @id @default(cuid())
+  userId        String        @map("user_id")
+  previewId     String        @unique @map("preview_id")
+  amount        Int           // in paise
+  currency      String        @default("INR")
+  paymentStatus PaymentStatus @default(PENDING) @map("payment_status")
+  gatewayRef    String?       @map("gateway_ref") // Razorpay order_id
+  paymentId     String?       @map("payment_id")  // Razorpay payment_id
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @updatedAt @map("updated_at")
+
+  user       User        @relation(fields: [userId], references: [id])
+  preview    Preview     @relation(fields: [previewId], references: [id])
+  invitation Invitation?
+
+  @@index([gatewayRef])
+  @@map("orders")
+}
+
+model Invitation {
+  id           String           @id @default(cuid())
+  orderId      String           @unique @map("order_id")
+  templateId   String           @map("template_id")
+  userId       String           @map("user_id")
+  finalData    Json             @map("final_data") // Snapshot of form data at payment time
+  slug         String           @unique // Vanity or random slug
+  expiryDate   DateTime?        @map("expiry_date") // null = permanent
+  status       InvitationStatus @default(ACTIVE)
+  ogTitle      String?          @map("og_title")
+  ogImage      String?          @map("og_image")
+  createdAt    DateTime         @default(now()) @map("created_at")
+
+  order    Order    @relation(fields: [orderId], references: [id])
+  template Template @relation(fields: [templateId], references: [id])
+  user     User     @relation(fields: [userId], references: [id])
+  rsvps    Rsvp[]
+
+  @@index([slug])
+  @@map("invitations")
+}
+
+model Rsvp {
+  id           String   @id @default(cuid())
+  invitationId String   @map("invitation_id")
+  guestName    String   @map("guest_name")
+  response     RsvpResponse
+  guestCount   Int      @default(1) @map("guest_count")
+  message      String?
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  invitation Invitation @relation(fields: [invitationId], references: [id])
+
+  @@map("rsvps")
+}
+
+// Enums
+enum OccasionType {
+  WEDDING
+  ENGAGEMENT
+  BIRTHDAY
+  HOUSEWARMING
+  BABY_SHOWER
+  RELIGIOUS
+}
+
+enum CultureTag {
+  HINDU
+  MUSLIM
+  SIKH
+  CHRISTIAN
+  UNIVERSAL
+}
+
+enum PricingTier {
+  BASIC
+  PREMIUM
+  DELUXE
+}
+
+enum TemplateStatus {
+  ACTIVE
+  INACTIVE
+  DRAFT
+}
+
+enum PreviewStatus {
+  ACTIVE
+  EXPIRED
+  CONVERTED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+enum InvitationStatus {
+  ACTIVE
+  EXPIRED
+  REVOKED
+}
+
+enum RsvpResponse {
+  ATTENDING
+  NOT_ATTENDING
+  MAYBE
+}
