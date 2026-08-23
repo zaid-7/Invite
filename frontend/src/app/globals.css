@@ -1,30 +1,88 @@
 @import "tailwindcss";
 
 :root {
-  --background: #FAF6F0; /* Ivory background */
-  --foreground: #2D2D2D; /* Charcoal text */
-  
-  --maroon-deep: #5B1A1A;
-  --gold-warm: #C9A84C;
-  --teal-deep: #1A4A4A;
-  --rose-soft: #E8B4B8;
-  --emerald-muted: #3D6B5E;
-  --midnight-blue: #1B2838;
+  /* ── Core Palette (from DESIGN.md) ── */
+  --background: #ffffff;       /* canvas */
+  --foreground: #222222;       /* ink */
+
+  /* Brand & Accent */
+  --primary: #ff385c;          /* Rausch */
+  --primary-active: #e00b41;
+  --primary-disabled: #ffd1da;
+  --on-primary: #ffffff;
+
+  /* Text */
+  --ink: #222222;
+  --body: #3f3f3f;
+  --muted: #6a6a6a;
+  --muted-soft: #929292;
+
+  /* Surfaces */
+  --surface-soft: #f7f7f7;
+  --surface-strong: #f2f2f2;
+  --surface-card: #ffffff;
+
+  /* Borders */
+  --hairline: #dddddd;
+  --hairline-soft: #ebebeb;
+  --border-strong: #c1c1c1;
+
+  /* Semantic */
+  --error: #c13515;
+  --error-hover: #b32505;
+  --legal-link: #428bff;
+  --star-rating: #222222;
+  --scrim: #000000;
+
+  /* Spacing */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-base: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-xxl: 48px;
+  --space-section: 64px;
+
+  /* Radii */
+  --rounded-xs: 4px;
+  --rounded-sm: 8px;
+  --rounded-md: 14px;
+  --rounded-lg: 20px;
+  --rounded-xl: 32px;
+  --rounded-full: 9999px;
+
+  /* Shadow (single tier) */
+  --shadow-card: rgba(0,0,0,0.02) 0 0 0 1px, rgba(0,0,0,0.04) 0 2px 6px, rgba(0,0,0,0.1) 0 4px 8px;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  
-  --color-maroon-deep: var(--maroon-deep);
-  --color-gold-warm: var(--gold-warm);
-  --color-teal-deep: var(--teal-deep);
-  --color-rose-soft: var(--rose-soft);
-  --color-emerald-muted: var(--emerald-muted);
-  --color-midnight-blue: var(--midnight-blue);
-  
+
+  --color-primary: var(--primary);
+  --color-primary-active: var(--primary-active);
+  --color-primary-disabled: var(--primary-disabled);
+  --color-on-primary: var(--on-primary);
+
+  --color-ink: var(--ink);
+  --color-body-text: var(--body);
+  --color-muted: var(--muted);
+  --color-muted-soft: var(--muted-soft);
+
+  --color-surface-soft: var(--surface-soft);
+  --color-surface-strong: var(--surface-strong);
+  --color-surface-card: var(--surface-card);
+
+  --color-hairline: var(--hairline);
+  --color-hairline-soft: var(--hairline-soft);
+  --color-border-strong: var(--border-strong);
+
+  --color-error: var(--error);
+  --color-scrim: var(--scrim);
+
   --font-serif: var(--font-playfair), Georgia, serif;
-  --font-sans: var(--font-inter), sans-serif;
+  --font-sans: var(--font-inter), -apple-system, system-ui, Roboto, 'Helvetica Neue', sans-serif;
   --font-hindi: var(--font-devanagari), sans-serif;
   --font-urdu: var(--font-nastaliq), serif;
 }
@@ -34,9 +92,11 @@ body {
   color: var(--foreground);
   font-family: var(--font-sans);
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Custom premium styles */
+/* ── Typography ── */
 .text-serif {
   font-family: var(--font-serif);
 }
@@ -54,36 +114,33 @@ body {
   direction: rtl;
 }
 
-/* Diagonal Preview Watermark */
+/* ── Card Shadow ── */
+.shadow-card {
+  box-shadow: var(--shadow-card);
+}
+
+.shadow-card-hover {
+  box-shadow: none;
+  transition: box-shadow 0.2s ease;
+}
+.shadow-card-hover:hover {
+  box-shadow: var(--shadow-card);
+}
+
+/* ── Diagonal Preview Watermark (kept for invitation previews) ── */
 .watermark {
   background-image: repeating-linear-gradient(
     -45deg,
-    rgba(201, 168, 76, 0.08) 0px,
-    rgba(201, 168, 76, 0.08) 100px,
-    rgba(91, 26, 26, 0.08) 100px,
-    rgba(91, 26, 26, 0.08) 200px
+    rgba(255, 56, 92, 0.06) 0px,
+    rgba(255, 56, 92, 0.06) 100px,
+    rgba(34, 34, 34, 0.04) 100px,
+    rgba(34, 34, 34, 0.04) 200px
   );
 }
 
-/* Custom animations */
-@keyframes spin-slow {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.animate-spin-slow {
-  animation: spin-slow 30s linear infinite;
-}
-
-/* Glassmorphism utility */
-.glass {
-  background: rgba(250, 246, 240, 0.7);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(201, 168, 76, 0.2);
-}
-
-.glass-dark {
-  background: rgba(45, 45, 45, 0.85);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(201, 168, 76, 0.2);
+/* ── Focus Ring ── */
+.input-focus {
+  outline: none;
+  border-color: var(--ink);
+  border-width: 2px;
 }

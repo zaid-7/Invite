@@ -69,57 +69,67 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background text-foreground">
+    <div className="min-h-screen flex flex-col bg-surface-soft text-foreground">
       <Navbar />
 
       <main className="flex-1 flex items-center justify-center py-16 px-4">
-        <div className="w-full max-w-md bg-maroon-deep text-ivory border border-gold-warm/30 rounded-xl p-8 shadow-2xl relative">
-          <div className="absolute top-2 right-2 text-gold-warm text-lg opacity-35">𑁍</div>
-          
+        <div
+          className="w-full max-w-md bg-white border border-hairline p-8 relative"
+          style={{ borderRadius: 14, boxShadow: 'var(--shadow-card)' }}
+        >
           <div className="flex flex-col items-center mb-8">
-            <div className="w-12 h-12 rounded-full border border-gold-warm/40 flex items-center justify-center text-gold-warm bg-maroon-deep mb-3">
-              <KeyRound size={20} />
+            <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-4">
+              <KeyRound size={24} />
             </div>
-            <h1 className="text-serif text-2xl font-bold tracking-widest text-gold-warm">MANDAP PORTAL</h1>
-            <p className="text-xs text-gold-warm/60 mt-1 uppercase font-semibold tracking-wider">
-              {stage === 'INPUT' ? 'Send OTP verification code' : 'Verify login credentials'}
+            <h1 className="text-2xl font-bold text-ink">Welcome to Mandap</h1>
+            <p className="text-sm text-muted mt-1.5" style={{ fontWeight: 400 }}>
+              {stage === 'INPUT' ? 'Sign in to create your invitation' : 'Enter the verification code'}
             </p>
           </div>
 
           {errorMsg && (
-            <div className="mb-6 p-3 bg-red-900/60 border border-red-500/40 text-red-100 rounded text-xs text-center font-semibold">
+            <div
+              className="mb-6 p-3 bg-red-50 border border-red-200 text-error text-sm text-center font-medium"
+              style={{ borderRadius: 8 }}
+            >
               {errorMsg}
             </div>
           )}
 
           {successMsg && (
-            <div className="mb-6 p-3 bg-gold-warm/15 border border-gold-warm/40 text-gold-warm rounded text-xs text-center">
+            <div
+              className="mb-6 p-3 bg-green-50 border border-green-200 text-green-700 text-sm text-center"
+              style={{ borderRadius: 8, fontWeight: 400 }}
+            >
               {successMsg}
             </div>
           )}
 
           {stage === 'INPUT' ? (
-            <form onSubmit={handleSendOtp} className="flex flex-col gap-5 text-sm">
-              <div className="flex justify-center gap-4 bg-maroon-deep/50 border border-gold-warm/15 p-1 rounded-lg">
+            <form onSubmit={handleSendOtp} className="flex flex-col gap-5">
+              {/* Phone/Email toggle */}
+              <div className="flex bg-surface-soft border border-hairline p-1" style={{ borderRadius: 8 }}>
                 <button
                   type="button"
                   onClick={() => setAuthMethod('phone')}
-                  className={`flex-1 py-2 rounded text-xs font-semibold uppercase tracking-wider transition-colors ${
+                  className={`flex-1 py-2.5 text-sm font-medium transition-all cursor-pointer ${
                     authMethod === 'phone'
-                      ? 'bg-gold-warm text-maroon-deep'
-                      : 'text-gold-warm/75 hover:bg-gold-warm/5'
+                      ? 'bg-white text-ink shadow-sm'
+                      : 'text-muted hover:text-ink'
                   }`}
+                  style={{ borderRadius: 6 }}
                 >
                   Phone
                 </button>
                 <button
                   type="button"
                   onClick={() => setAuthMethod('email')}
-                  className={`flex-1 py-2 rounded text-xs font-semibold uppercase tracking-wider transition-colors ${
+                  className={`flex-1 py-2.5 text-sm font-medium transition-all cursor-pointer ${
                     authMethod === 'email'
-                      ? 'bg-gold-warm text-maroon-deep'
-                      : 'text-gold-warm/75 hover:bg-gold-warm/5'
+                      ? 'bg-white text-ink shadow-sm'
+                      : 'text-muted hover:text-ink'
                   }`}
+                  style={{ borderRadius: 6 }}
                 >
                   Email
                 </button>
@@ -127,10 +137,10 @@ export default function LoginPage() {
 
               {authMethod === 'phone' ? (
                 <div>
-                  <label className="block text-gold-warm/75 text-xs uppercase mb-1 font-semibold">Phone Number</label>
+                  <label className="block text-sm font-medium text-ink mb-1.5">Phone Number</label>
                   <div className="relative">
-                    <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gold-warm/60">
-                      <Smartphone size={16} />
+                    <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-muted-soft">
+                      <Smartphone size={18} />
                     </span>
                     <input
                       type="tel"
@@ -138,16 +148,17 @@ export default function LoginPage() {
                       value={phone}
                       onChange={e => setPhone(e.target.value)}
                       placeholder="+91 XXXXX XXXXX"
-                      className="w-full bg-maroon-deep/40 border border-gold-warm/30 rounded py-2 px-9 focus:outline-none focus:border-gold-warm text-gold-warm placeholder-gold-warm/30"
+                      className="w-full bg-white border border-hairline py-3 px-10 text-ink placeholder-muted-soft focus:outline-none focus:border-ink focus:border-2"
+                      style={{ borderRadius: 8, height: 48 }}
                     />
                   </div>
                 </div>
               ) : (
                 <div>
-                  <label className="block text-gold-warm/75 text-xs uppercase mb-1 font-semibold">Email Address</label>
+                  <label className="block text-sm font-medium text-ink mb-1.5">Email Address</label>
                   <div className="relative">
-                    <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gold-warm/60">
-                      <Mail size={16} />
+                    <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-muted-soft">
+                      <Mail size={18} />
                     </span>
                     <input
                       type="email"
@@ -155,7 +166,8 @@ export default function LoginPage() {
                       value={email}
                       onChange={e => setEmail(e.target.value)}
                       placeholder="you@example.com"
-                      className="w-full bg-maroon-deep/40 border border-gold-warm/30 rounded py-2 px-9 focus:outline-none focus:border-gold-warm text-gold-warm placeholder-gold-warm/30"
+                      className="w-full bg-white border border-hairline py-3 px-10 text-ink placeholder-muted-soft focus:outline-none focus:border-ink focus:border-2"
+                      style={{ borderRadius: 8, height: 48 }}
                     />
                   </div>
                 </div>
@@ -164,21 +176,22 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-gold-warm text-maroon-deep font-sans font-bold hover:scale-102 active:scale-98 transition-transform py-3 rounded-lg flex items-center justify-center gap-2 disabled:opacity-50 mt-2 cursor-pointer shadow-lg"
+                className="w-full bg-primary text-on-primary font-medium hover:bg-primary-active transition-colors py-3.5 flex items-center justify-center gap-2 disabled:opacity-50 mt-1 cursor-pointer"
+                style={{ borderRadius: 8, height: 48 }}
               >
                 {loading ? 'Sending...' : 'Get OTP Code'}
                 <ArrowRight size={16} />
               </button>
             </form>
           ) : (
-            <form onSubmit={handleVerifyOtp} className="flex flex-col gap-6 text-sm">
+            <form onSubmit={handleVerifyOtp} className="flex flex-col gap-6">
               <div>
-                <label className="block text-gold-warm/75 text-xs uppercase mb-1 font-semibold text-center">
+                <label className="block text-sm font-medium text-ink mb-1.5 text-center">
                   Verification Code (OTP)
                 </label>
                 <div className="relative">
-                  <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gold-warm/60">
-                    <ShieldCheck size={16} />
+                  <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-muted-soft">
+                    <ShieldCheck size={18} />
                   </span>
                   <input
                     type="text"
@@ -187,7 +200,8 @@ export default function LoginPage() {
                     value={otpCode}
                     onChange={e => setOtpCode(e.target.value)}
                     placeholder="Enter 6-digit code"
-                    className="w-full bg-maroon-deep/40 border border-gold-warm/30 rounded py-2.5 px-9 focus:outline-none focus:border-gold-warm text-center tracking-[0.3em] font-mono text-lg text-gold-warm placeholder-gold-warm/20"
+                    className="w-full bg-white border border-hairline py-3 px-10 focus:outline-none focus:border-ink focus:border-2 text-center tracking-[0.3em] font-mono text-lg text-ink placeholder-muted-soft"
+                    style={{ borderRadius: 8, height: 56 }}
                   />
                 </div>
               </div>
@@ -196,7 +210,8 @@ export default function LoginPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-gold-warm text-maroon-deep font-sans font-bold hover:scale-102 active:scale-98 transition-transform py-3 rounded-lg flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer shadow-lg"
+                  className="w-full bg-primary text-on-primary font-medium hover:bg-primary-active transition-colors py-3.5 flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
+                  style={{ borderRadius: 8, height: 48 }}
                 >
                   {loading ? 'Verifying...' : 'Verify & Continue'}
                 </button>
@@ -204,7 +219,7 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={() => setStage('INPUT')}
-                  className="text-center text-xs text-gold-warm/60 hover:text-gold-warm transition-colors py-1 cursor-pointer font-semibold uppercase tracking-wider"
+                  className="text-center text-sm text-muted hover:text-ink transition-colors py-2 cursor-pointer font-medium"
                 >
                   Change Account Method
                 </button>

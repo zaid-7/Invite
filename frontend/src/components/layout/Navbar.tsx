@@ -28,43 +28,46 @@ export const Navbar: React.FC = () => {
   };
 
   return (
-    <nav className="w-full px-6 py-4 bg-maroon-deep text-ivory border-b border-gold-warm/20 z-40 relative">
-      <div className="max-w-7xl mx-auto flex items-center justify-between">
+    <nav className="w-full bg-white border-b border-hairline z-40 relative" style={{ height: 80 }}>
+      <div className="max-w-7xl mx-auto h-full flex items-center justify-between px-6 lg:px-10">
         {/* Brand Logo */}
-        <Link href="/" className="flex items-center gap-2 group">
-          <div className="w-8 h-8 rounded-full border border-gold-warm/40 flex items-center justify-center text-gold-warm font-bold text-sm bg-maroon-deep group-hover:border-gold-warm transition-colors">
+        <Link href="/" className="flex items-center gap-2.5 group">
+          <div
+            className="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-on-primary font-bold text-sm transition-colors group-hover:bg-primary-active"
+          >
             M
           </div>
-          <span className="text-serif text-2xl font-bold tracking-widest text-gold-warm group-hover:text-gold-warm/95 transition-colors">
-            MANDAP
+          <span className="text-xl font-semibold tracking-tight text-ink">
+            Mandap
           </span>
         </Link>
 
         {/* Links */}
-        <div className="flex items-center gap-6 text-sm font-semibold tracking-wider uppercase">
-          <Link href="/browse" className="hover:text-gold-warm transition-colors text-ivory">
+        <div className="flex items-center gap-6 text-base font-semibold">
+          <Link href="/browse" className="text-ink hover:text-primary transition-colors">
             Browse
           </Link>
-          <Link href="/#pricing" className="hover:text-gold-warm transition-colors text-ivory">
+          <Link href="/#pricing" className="text-ink hover:text-primary transition-colors">
             Pricing
           </Link>
 
           {isLoggedIn ? (
-            <div className="flex items-center gap-4 border-l border-gold-warm/25 pl-4">
-              <span className="text-gold-warm/75 text-xs lowercase max-w-[120px] truncate">
+            <div className="flex items-center gap-4 border-l border-hairline pl-5">
+              <span className="text-muted text-sm max-w-[140px] truncate">
                 {userPhone}
               </span>
               <button
                 onClick={handleLogout}
-                className="bg-gold-warm/10 text-gold-warm hover:bg-gold-warm/20 px-3 py-1.5 rounded text-xs border border-gold-warm/30 transition-all font-semibold uppercase tracking-wider"
+                className="text-ink hover:text-primary text-sm font-medium transition-colors cursor-pointer"
               >
-                Log Out
+                Log out
               </button>
             </div>
           ) : (
             <Link
               href="/auth/login"
-              className="bg-gold-warm text-maroon-deep font-sans font-bold hover:scale-105 active:scale-95 transition-transform px-4 py-2 rounded text-xs"
+              className="bg-primary text-on-primary font-medium hover:bg-primary-active transition-colors px-5 py-2.5 text-sm"
+              style={{ borderRadius: 8 }}
             >
               Get Started
             </Link>
