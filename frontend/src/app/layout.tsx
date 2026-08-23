@@ -73,7 +73,7 @@ export default function RootLayout({
       lang="en"
       className={`${inter.variable} ${playfairDisplay.variable} ${devanagari.variable} ${nastaliq.variable} ${greatVibes.variable} ${alexBrush.variable} ${cormorantGaramond.variable} ${jost.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-background text-foreground font-sans">
+      <body className="min-h-full flex flex-col bg-background text-foreground font-sans" style={{ fontWeight: 400 }}>
         {children}
       </body>
     </html>

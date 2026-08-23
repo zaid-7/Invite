@@ -7,7 +7,7 @@ import { api } from '@/lib/api';
 import { Template } from '@/types/template';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
-import { ChevronRight, ChevronLeft, Sparkles, Plus, Trash2, Calendar, LayoutGrid, Music, HelpCircle, Lock } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Sparkles, Plus, Trash2, Calendar, LayoutGrid, Music, HelpCircle, Lock, Smartphone, Mail, ShieldCheck } from 'lucide-react';
 
 
 export default function BuilderPage({ params }: { params: Promise<{ templateId: string }> }) {
@@ -208,11 +208,18 @@ export default function BuilderPage({ params }: { params: Promise<{ templateId: 
     }
   };
 
+  const stepLabels = ['Names', 'Events', 'Music', 'Review'];
+
+  /* ─── Shared input style ─── */
+  const inputCls = "w-full bg-white border border-hairline py-2.5 px-3.5 text-ink placeholder-muted-soft focus:outline-none focus:border-ink focus:border-2 text-sm";
+  const inputStyle = { borderRadius: 8, height: 44 };
+  const labelCls = "block text-sm font-medium text-ink mb-1.5";
+
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col bg-background text-foreground justify-center items-center">
-        <div className="w-10 h-10 border-4 border-gold-warm border-t-transparent rounded-full animate-spin mb-4" />
-        <p className="text-sm font-semibold tracking-wider text-maroon-deep uppercase animate-pulse">Initializing Builder Workspace...</p>
+        <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4" />
+        <p className="text-sm font-medium text-muted animate-pulse">Initializing Builder Workspace...</p>
       </div>
     );
   }
@@ -220,114 +227,120 @@ export default function BuilderPage({ params }: { params: Promise<{ templateId: 
   if (errorText || !template) {
     return (
       <div className="min-h-screen flex flex-col bg-background text-foreground items-center justify-center py-20 px-4">
-        <div className="text-center p-8 bg-red-50 border border-red-200 rounded-xl max-w-sm">
-          <span className="text-red-600 block text-lg font-bold mb-2">Builder Error</span>
-          <span className="text-sm text-gray-500">{errorText || 'Template missing.'}</span>
-          <Link href="/browse" className="block mt-6 text-xs bg-maroon-deep text-ivory py-2 px-4 rounded font-bold uppercase">Return to browse</Link>
+        <div className="text-center p-8 bg-red-50 border border-red-200 max-w-sm" style={{ borderRadius: 14 }}>
+          <span className="text-error block text-lg font-semibold mb-2">Builder Error</span>
+          <span className="text-sm text-muted" style={{ fontWeight: 400 }}>{errorText || 'Template missing.'}</span>
+          <Link href="/browse" className="block mt-6 text-sm bg-primary text-on-primary py-2.5 px-5 font-medium" style={{ borderRadius: 8 }}>Return to browse</Link>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-background text-foreground">
+    <div className="min-h-screen flex flex-col bg-surface-soft text-foreground">
       <Navbar />
 
-      <main className="flex-1 max-w-4xl w-full mx-auto px-6 py-10">
+      <main className="flex-1 max-w-3xl w-full mx-auto px-6 py-10">
         {/* Step Indicator Header */}
         <div className="mb-10 text-center">
-          <span className="text-[10px] bg-gold-warm text-maroon-deep font-bold px-3 py-1 rounded-full uppercase tracking-widest shadow-sm">
+          <span
+            className="inline-block text-xs bg-primary text-on-primary font-medium px-4 py-1.5 mb-4"
+            style={{ borderRadius: 9999 }}
+          >
             {template.name}
           </span>
-          <h1 className="text-serif text-3xl font-bold text-maroon-deep mt-4">INVITATION BUILDER</h1>
+          <h1 className="text-2xl md:text-3xl font-bold text-ink">Invitation Builder</h1>
           
-          <div className="flex justify-between items-center max-w-md mx-auto mt-6 relative select-none">
-            <div className="absolute left-0 right-0 h-[2px] bg-gold-warm/25 top-1/2 -translate-y-1/2 z-0" />
+          <div className="flex justify-between items-center max-w-md mx-auto mt-8 relative select-none">
+            <div className="absolute left-0 right-0 h-[2px] bg-hairline top-1/2 -translate-y-1/2 z-0" />
             <div
-              className="absolute left-0 h-[2px] bg-gold-warm top-1/2 -translate-y-1/2 z-0 transition-all duration-300"
+              className="absolute left-0 h-[2px] bg-primary top-1/2 -translate-y-1/2 z-0 transition-all duration-300"
               style={{ width: `${((step - 1) / 3) * 100}%` }}
             />
             {[1, 2, 3, 4].map(s => (
               <button
                 key={s}
                 onClick={() => setStep(s)}
-                className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-xs font-bold z-10 transition-all cursor-pointer ${
+                className={`w-9 h-9 rounded-full border-2 flex items-center justify-center text-sm font-semibold z-10 transition-all cursor-pointer ${
                   step >= s
-                    ? 'bg-gold-warm text-maroon-deep border-gold-warm'
-                    : 'bg-background text-foreground/45 border-gold-warm/30'
+                    ? 'bg-primary text-on-primary border-primary'
+                    : 'bg-white text-muted border-hairline'
                 }`}
               >
                 {s}
               </button>
             ))}
           </div>
-          <div className="flex justify-between max-w-md mx-auto text-[10px] font-bold uppercase tracking-widest text-[#B58D3D] mt-2 px-1">
-            <span>Names</span>
-            <span>Events</span>
-            <span>Music</span>
-            <span>Review</span>
+          <div className="flex justify-between max-w-md mx-auto text-xs font-medium text-muted mt-2.5 px-1">
+            {stepLabels.map(l => <span key={l}>{l}</span>)}
           </div>
         </div>
 
         {/* Builder Steps Container */}
-        <div className="bg-maroon-deep text-ivory border border-gold-warm/25 rounded-xl shadow-2xl p-6 md:p-8 relative">
-          <div className="absolute top-2 right-2 text-gold-warm text-lg opacity-35">𑁍</div>
-
+        <div
+          className="bg-white border border-hairline p-6 md:p-8 relative"
+          style={{ borderRadius: 14 }}
+        >
           {/* STEP 1: Couple Names */}
           {step === 1 && (
             <div className="flex flex-col gap-6">
-              <h2 className="text-serif text-xl font-bold text-gold-warm border-b border-gold-warm/25 pb-2 mb-2 flex items-center gap-2">
-                <LayoutGrid size={18} /> Couple &amp; Parents Details
+              <h2 className="text-xl font-semibold text-ink border-b border-hairline pb-3 mb-1 flex items-center gap-2">
+                <LayoutGrid size={18} className="text-primary" /> Couple &amp; Parents Details
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div>
-                  <label className="block text-gold-warm/80 text-xs uppercase mb-1 font-semibold">Groom's Name</label>
+                  <label className={labelCls}>Groom&apos;s Name</label>
                   <input
                     type="text"
                     value={groomName}
                     onChange={e => setGroomName(e.target.value)}
                     required
-                    className="w-full bg-maroon-deep/50 border border-gold-warm/30 rounded py-2 px-3 focus:outline-none focus:border-gold-warm text-gold-warm"
+                    className={inputCls}
+                    style={inputStyle}
                   />
                 </div>
                 <div>
-                  <label className="block text-gold-warm/80 text-xs uppercase mb-1 font-semibold">Bride's Name</label>
+                  <label className={labelCls}>Bride&apos;s Name</label>
                   <input
                     type="text"
                     value={brideName}
                     onChange={e => setBrideName(e.target.value)}
                     required
-                    className="w-full bg-maroon-deep/50 border border-gold-warm/30 rounded py-2 px-3 focus:outline-none focus:border-gold-warm text-gold-warm"
+                    className={inputCls}
+                    style={inputStyle}
                   />
                 </div>
                 <div>
-                  <label className="block text-gold-warm/70 text-xs uppercase mb-1 font-semibold">Groom's Parents (Optional)</label>
+                  <label className={labelCls}>Groom&apos;s Parents <span className="text-muted font-normal">(Optional)</span></label>
                   <input
                     type="text"
                     value={groomParents}
                     onChange={e => setGroomParents(e.target.value)}
                     placeholder="e.g. Mr. & Mrs. Sharma"
-                    className="w-full bg-maroon-deep/50 border border-gold-warm/30 rounded py-2 px-3 focus:outline-none focus:border-gold-warm text-gold-warm"
+                    className={inputCls}
+                    style={inputStyle}
                   />
                 </div>
                 <div>
-                  <label className="block text-gold-warm/70 text-xs uppercase mb-1 font-semibold">Bride's Parents (Optional)</label>
+                  <label className={labelCls}>Bride&apos;s Parents <span className="text-muted font-normal">(Optional)</span></label>
                   <input
                     type="text"
                     value={brideParents}
                     onChange={e => setBrideParents(e.target.value)}
                     placeholder="e.g. Mr. & Mrs. Patel"
-                    className="w-full bg-maroon-deep/50 border border-gold-warm/30 rounded py-2 px-3 focus:outline-none focus:border-gold-warm text-gold-warm"
+                    className={inputCls}
+                    style={inputStyle}
                   />
                 </div>
                 <div className="md:col-span-2">
-                  <label className="block text-gold-warm/80 text-xs uppercase mb-1 font-semibold">Card Welcome Quote</label>
+                  <label className={labelCls}>Card Welcome Quote</label>
                   <textarea
                     rows={2}
                     value={welcomeQuote}
                     onChange={e => setWelcomeQuote(e.target.value)}
                     required
-                    className="w-full bg-maroon-deep/50 border border-gold-warm/30 rounded py-2 px-3 focus:outline-none focus:border-gold-warm text-gold-warm text-sm leading-relaxed"
+                    className="w-full bg-white border border-hairline py-2.5 px-3.5 text-ink placeholder-muted-soft focus:outline-none focus:border-ink focus:border-2 text-sm leading-relaxed"
+                    style={{ borderRadius: 8 }}
                   />
                 </div>
               </div>
@@ -337,93 +350,101 @@ export default function BuilderPage({ params }: { params: Promise<{ templateId: 
           {/* STEP 2: Event timelines */}
           {step === 2 && (
             <div className="flex flex-col gap-6">
-              <div className="flex justify-between items-center border-b border-gold-warm/25 pb-2 mb-2">
-                <h2 className="text-serif text-xl font-bold text-gold-warm flex items-center gap-2">
-                  <Calendar size={18} /> Timeline Ceremonies
+              <div className="flex justify-between items-center border-b border-hairline pb-3 mb-1">
+                <h2 className="text-xl font-semibold text-ink flex items-center gap-2">
+                  <Calendar size={18} className="text-primary" /> Timeline Ceremonies
                 </h2>
                 <button
                   type="button"
                   onClick={addEvent}
-                  className="bg-gold-warm/15 hover:bg-gold-warm/25 border border-gold-warm/40 text-gold-warm text-xs font-bold py-1.5 px-3 rounded flex items-center gap-1 cursor-pointer transition-colors"
+                  className="bg-surface-soft hover:bg-surface-strong border border-hairline text-ink text-sm font-medium py-2 px-4 flex items-center gap-1.5 cursor-pointer transition-colors"
+                  style={{ borderRadius: 8 }}
                 >
-                  <Plus size={14} /> Add Event
+                  <Plus size={15} /> Add Event
                 </button>
               </div>
 
               {events.length === 0 ? (
-                <div className="text-center py-10 bg-maroon-deep/30 border border-gold-warm/15 rounded-lg text-gold-warm/60 text-xs">
-                  No events added. Click "Add Event" to record a ceremony.
+                <div className="text-center py-12 bg-surface-soft border border-hairline text-muted text-sm" style={{ borderRadius: 14, fontWeight: 400 }}>
+                  No events added. Click &quot;Add Event&quot; to record a ceremony.
                 </div>
               ) : (
                 <div className="flex flex-col gap-5">
                   {events.map((ev, index) => (
                     <div
                       key={ev.id}
-                      className="border border-gold-warm/20 rounded-lg p-5 bg-maroon-deep/45 relative flex flex-col gap-4"
+                      className="border border-hairline p-5 bg-white relative flex flex-col gap-4"
+                      style={{ borderRadius: 14 }}
                     >
                       <button
                         type="button"
                         onClick={() => removeEvent(ev.id)}
-                        className="absolute top-4 right-4 text-red-400 hover:text-red-500 cursor-pointer p-1.5 hover:bg-red-500/10 rounded transition-colors"
+                        className="absolute top-4 right-4 text-error hover:text-error/80 cursor-pointer p-1.5 hover:bg-red-50 transition-colors"
                         title="Delete Ceremony"
+                        style={{ borderRadius: 8 }}
                       >
                         <Trash2 size={16} />
                       </button>
 
-                      <div className="text-[10px] uppercase font-bold text-gold-warm/60">
+                      <div className="text-xs font-semibold text-muted uppercase tracking-wider">
                         Ceremony #{index + 1}
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm mt-0.5">
                         <div className="md:col-span-3">
-                          <label className="block text-gold-warm/75 text-[10px] uppercase mb-1 font-semibold">Event Name</label>
+                          <label className={labelCls}>Event Name</label>
                           <input
                             type="text"
                             required
                             value={ev.name}
                             onChange={e => updateEventValue(ev.id, 'name', e.target.value)}
-                            className="w-full bg-maroon-deep/50 border border-gold-warm/30 rounded py-1.5 px-3 focus:outline-none focus:border-gold-warm text-gold-warm text-xs"
+                            className={inputCls}
+                            style={inputStyle}
                           />
                         </div>
                         <div>
-                          <label className="block text-gold-warm/75 text-[10px] uppercase mb-1 font-semibold">Date</label>
+                          <label className={labelCls}>Date</label>
                           <input
                             type="date"
                             required
                             value={ev.date}
                             onChange={e => updateEventValue(ev.id, 'date', e.target.value)}
-                            className="w-full bg-maroon-deep/50 border border-gold-warm/30 rounded py-1.5 px-3 focus:outline-none focus:border-gold-warm text-gold-warm text-xs"
+                            className={inputCls}
+                            style={inputStyle}
                           />
                         </div>
                         <div>
-                          <label className="block text-gold-warm/75 text-[10px] uppercase mb-1 font-semibold">Time</label>
+                          <label className={labelCls}>Time</label>
                           <input
                             type="text"
                             required
                             value={ev.time}
                             onChange={e => updateEventValue(ev.id, 'time', e.target.value)}
                             placeholder="e.g. 05:00 PM onwards"
-                            className="w-full bg-maroon-deep/50 border border-gold-warm/30 rounded py-1.5 px-3 focus:outline-none focus:border-gold-warm text-gold-warm text-xs"
+                            className={inputCls}
+                            style={inputStyle}
                           />
                         </div>
                         <div className="md:col-span-3">
-                          <label className="block text-gold-warm/75 text-[10px] uppercase mb-1 font-semibold">Venue Name</label>
+                          <label className={labelCls}>Venue Name</label>
                           <input
                             type="text"
                             required
                             value={ev.venue}
                             onChange={e => updateEventValue(ev.id, 'venue', e.target.value)}
-                            className="w-full bg-maroon-deep/50 border border-gold-warm/30 rounded py-1.5 px-3 focus:outline-none focus:border-gold-warm text-gold-warm text-xs"
+                            className={inputCls}
+                            style={inputStyle}
                           />
                         </div>
                         <div className="md:col-span-3">
-                          <label className="block text-gold-warm/75 text-[10px] uppercase mb-1 font-semibold">Address Details</label>
+                          <label className={labelCls}>Address Details</label>
                           <input
                             type="text"
                             required
                             value={ev.address}
                             onChange={e => updateEventValue(ev.id, 'address', e.target.value)}
-                            className="w-full bg-maroon-deep/50 border border-gold-warm/30 rounded py-1.5 px-3 focus:outline-none focus:border-gold-warm text-gold-warm text-xs"
+                            className={inputCls}
+                            style={inputStyle}
                           />
                         </div>
                       </div>
@@ -437,20 +458,21 @@ export default function BuilderPage({ params }: { params: Promise<{ templateId: 
           {/* STEP 3: Music Selection */}
           {step === 3 && (
             <div className="flex flex-col gap-6">
-              <h2 className="text-serif text-xl font-bold text-gold-warm border-b border-gold-warm/25 pb-2 mb-2 flex items-center gap-2">
-                <Music size={18} /> Background Soundtrack
+              <h2 className="text-xl font-semibold text-ink border-b border-hairline pb-3 mb-1 flex items-center gap-2">
+                <Music size={18} className="text-primary" /> Background Soundtrack
               </h2>
               <div>
-                <label className="block text-gold-warm/80 text-xs uppercase mb-2 font-semibold">Select Invitation Audio Track</label>
+                <label className={labelCls}>Select Invitation Audio Track</label>
                 <div className="flex flex-col gap-3 max-w-md">
                   {template.schemaJson.fields.find((f: any) => f.name === 'musicUrl')?.options?.map((opt: any) => (
                     <label
                       key={opt.value}
-                      className={`flex items-center justify-between border p-4 rounded-lg cursor-pointer transition-all ${
+                      className={`flex items-center justify-between border p-4 cursor-pointer transition-all ${
                         musicUrl === opt.value
-                          ? 'border-gold-warm bg-gold-warm/10'
-                          : 'border-gold-warm/20 hover:border-gold-warm/40 bg-maroon-deep/20'
+                          ? 'border-ink bg-surface-soft'
+                          : 'border-hairline hover:border-border-strong bg-white'
                       }`}
+                      style={{ borderRadius: 14 }}
                     >
                       <div className="flex items-center gap-3">
                         <input
@@ -458,19 +480,20 @@ export default function BuilderPage({ params }: { params: Promise<{ templateId: 
                           name="music"
                           checked={musicUrl === opt.value}
                           onChange={() => setMusicUrl(opt.value)}
-                          className="text-gold-warm accent-gold-warm"
+                          className="accent-primary"
                         />
-                        <span className="text-sm font-semibold">{opt.label}</span>
+                        <span className="text-sm font-medium text-ink">{opt.label}</span>
                       </div>
-                      <Music size={14} className="text-gold-warm/50" />
+                      <Music size={14} className="text-muted-soft" />
                     </label>
                   ))}
                   <label
-                    className={`flex items-center justify-between border p-4 rounded-lg cursor-pointer transition-all ${
+                    className={`flex items-center justify-between border p-4 cursor-pointer transition-all ${
                       musicUrl === ''
-                        ? 'border-gold-warm bg-gold-warm/10'
-                        : 'border-gold-warm/20 hover:border-gold-warm/40 bg-maroon-deep/20'
+                        ? 'border-ink bg-surface-soft'
+                        : 'border-hairline hover:border-border-strong bg-white'
                     }`}
+                    style={{ borderRadius: 14 }}
                   >
                     <div className="flex items-center gap-3">
                       <input
@@ -478,9 +501,9 @@ export default function BuilderPage({ params }: { params: Promise<{ templateId: 
                         name="music"
                         checked={musicUrl === ''}
                         onChange={() => setMusicUrl('')}
-                        className="text-gold-warm accent-gold-warm"
+                        className="accent-primary"
                       />
-                      <span className="text-sm font-semibold">No Audio (Silent)</span>
+                      <span className="text-sm font-medium text-ink">No Audio (Silent)</span>
                     </div>
                   </label>
                 </div>
@@ -491,36 +514,36 @@ export default function BuilderPage({ params }: { params: Promise<{ templateId: 
           {/* STEP 4: Review and Generate */}
           {step === 4 && (
             <div className="flex flex-col gap-6">
-              <h2 className="text-serif text-xl font-bold text-gold-warm border-b border-gold-warm/25 pb-2 mb-2 flex items-center gap-2">
-                <Sparkles size={18} /> Form Summary Review
+              <h2 className="text-xl font-semibold text-ink border-b border-hairline pb-3 mb-1 flex items-center gap-2">
+                <Sparkles size={18} className="text-primary" /> Form Summary Review
               </h2>
-              <div className="bg-maroon-deep/50 border border-gold-warm/20 rounded-lg p-5 flex flex-col gap-4 text-xs md:text-sm text-gold-warm/90">
+              <div className="bg-surface-soft border border-hairline p-5 flex flex-col gap-4 text-sm text-body-text" style={{ borderRadius: 14 }}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <span className="text-[10px] uppercase text-gold-warm/50 block font-semibold">Groom &amp; Bride</span>
-                    <strong className="text-gold-warm text-sm">{groomName} &amp; {brideName}</strong>
+                    <span className="text-xs text-muted block font-medium mb-0.5">Groom &amp; Bride</span>
+                    <strong className="text-ink text-base">{groomName} &amp; {brideName}</strong>
                   </div>
                   <div>
-                    <span className="text-[10px] uppercase text-gold-warm/50 block font-semibold">Parents Names</span>
+                    <span className="text-xs text-muted block font-medium mb-0.5">Parents Names</span>
                     <span>{groomParents || '(Not set)'} &amp; {brideParents || '(Not set)'}</span>
                   </div>
                   <div className="md:col-span-2">
-                    <span className="text-[10px] uppercase text-gold-warm/50 block font-semibold">Welcome Quote</span>
-                    <span className="italic">"{welcomeQuote}"</span>
+                    <span className="text-xs text-muted block font-medium mb-0.5">Welcome Quote</span>
+                    <span className="italic">&quot;{welcomeQuote}&quot;</span>
                   </div>
                   <div>
-                    <span className="text-[10px] uppercase text-gold-warm/50 block font-semibold">Total Ceremonies Added</span>
+                    <span className="text-xs text-muted block font-medium mb-0.5">Total Ceremonies Added</span>
                     <strong>{events.length} events scheduled</strong>
                   </div>
                   <div>
-                    <span className="text-[10px] uppercase text-gold-warm/50 block font-semibold">Selected Audio</span>
+                    <span className="text-xs text-muted block font-medium mb-0.5">Selected Audio</span>
                     <strong>{musicUrl ? 'Custom Background Music Enabled' : 'Silent Card (No music)'}</strong>
                   </div>
                 </div>
               </div>
 
-              <div className="mt-4 flex flex-col items-center">
-                <p className="text-xs text-gold-warm/75 text-center max-w-sm mb-4 leading-relaxed">
+              <div className="mt-2 flex flex-col items-center">
+                <p className="text-sm text-muted text-center max-w-sm mb-2 leading-relaxed" style={{ fontWeight: 400 }}>
                   Proceeding will generate a time-limited 30-minute watermarked preview. You can review all details and unlock via payment.
                 </p>
               </div>
@@ -528,12 +551,13 @@ export default function BuilderPage({ params }: { params: Promise<{ templateId: 
           )}
 
           {/* Stepper Buttons Control panel */}
-          <div className="flex justify-between items-center border-t border-gold-warm/20 mt-8 pt-6 select-none">
+          <div className="flex justify-between items-center border-t border-hairline mt-8 pt-6 select-none">
             <button
               type="button"
               onClick={() => step > 1 && setStep(step - 1)}
               disabled={step === 1}
-              className="bg-gold-warm/10 hover:bg-gold-warm/15 text-gold-warm hover:text-gold-warm/90 border border-gold-warm/30 disabled:opacity-30 disabled:pointer-events-none rounded py-2 px-4 text-xs font-bold uppercase tracking-wider flex items-center gap-1 cursor-pointer transition-colors"
+              className="bg-white hover:bg-surface-soft text-ink border border-hairline disabled:opacity-30 disabled:pointer-events-none py-2.5 px-5 text-sm font-medium flex items-center gap-1.5 cursor-pointer transition-colors"
+              style={{ borderRadius: 8 }}
             >
               <ChevronLeft size={16} /> Back
             </button>
@@ -542,7 +566,8 @@ export default function BuilderPage({ params }: { params: Promise<{ templateId: 
               <button
                 type="button"
                 onClick={() => setStep(step + 1)}
-                className="bg-gold-warm text-maroon-deep hover:bg-gold-warm/95 rounded py-2 px-4 text-xs font-bold uppercase tracking-wider flex items-center gap-1 cursor-pointer shadow-lg hover:scale-103 active:scale-97 transition-all"
+                className="bg-primary text-on-primary hover:bg-primary-active py-2.5 px-5 text-sm font-medium flex items-center gap-1.5 cursor-pointer transition-colors"
+                style={{ borderRadius: 8 }}
               >
                 Continue <ChevronRight size={16} />
               </button>
@@ -551,10 +576,11 @@ export default function BuilderPage({ params }: { params: Promise<{ templateId: 
                 type="button"
                 onClick={handleGeneratePreviewTrigger}
                 disabled={submitting}
-                className="bg-gold-warm text-maroon-deep hover:bg-gold-warm/95 rounded py-2.5 px-6 text-xs font-extrabold uppercase tracking-widest flex items-center gap-1.5 cursor-pointer shadow-xl hover:scale-[1.03] active:scale-[0.97] transition-all disabled:opacity-50"
+                className="bg-primary text-on-primary hover:bg-primary-active py-3 px-6 text-sm font-semibold flex items-center gap-2 cursor-pointer transition-colors disabled:opacity-50"
+                style={{ borderRadius: 8 }}
               >
                 {submitting ? 'Generating...' : 'Generate Preview'}
-                <Sparkles size={14} />
+                <Sparkles size={15} />
               </button>
             )}
           </div>
@@ -563,53 +589,59 @@ export default function BuilderPage({ params }: { params: Promise<{ templateId: 
 
       {/* Authentication Gate Modal (Overlay) */}
       {showAuthModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm">
-          <div className="w-full max-w-sm bg-maroon-deep text-ivory border border-gold-warm/35 rounded-xl p-8 relative shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+          <div
+            className="w-full max-w-sm bg-white border border-hairline p-8 relative"
+            style={{ borderRadius: 14, boxShadow: 'var(--shadow-card)' }}
+          >
             <button
               onClick={() => setShowAuthModal(false)}
-              className="absolute top-3 right-3 text-gold-warm/50 hover:text-gold-warm p-1 hover:bg-gold-warm/10 rounded cursor-pointer transition-colors"
+              className="absolute top-4 right-4 text-muted hover:text-ink p-1.5 hover:bg-surface-soft cursor-pointer transition-colors"
+              style={{ borderRadius: 8 }}
             >
               ✕
             </button>
 
             <div className="flex flex-col items-center mb-6">
-              <div className="w-10 h-10 rounded-full border border-gold-warm/40 flex items-center justify-center text-gold-warm bg-maroon-deep mb-2.5">
-                <Lock size={18} />
+              <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-3">
+                <Lock size={20} />
               </div>
-              <h3 className="text-serif text-lg font-bold text-gold-warm">PREVIEW ACCESS GATE</h3>
-              <p className="text-[10px] text-gold-warm/60 uppercase font-semibold tracking-wider text-center mt-1 px-4">
-                Verify account before spawning transient previews
+              <h3 className="text-lg font-bold text-ink">Preview Access</h3>
+              <p className="text-sm text-muted text-center mt-1" style={{ fontWeight: 400 }}>
+                Verify your account before generating previews
               </p>
             </div>
 
             {authError && (
-              <div className="p-2.5 bg-red-950/65 border border-red-500/30 text-red-100 rounded text-[11px] text-center mb-4">
+              <div className="p-3 bg-red-50 border border-red-200 text-error text-sm text-center mb-4" style={{ borderRadius: 8 }}>
                 {authError}
               </div>
             )}
 
             {authStage === 'INPUT' ? (
-              <form onSubmit={handleAuthSubmit} className="flex flex-col gap-4 text-xs">
-                <div className="flex justify-center gap-2 bg-maroon-deep/30 border border-gold-warm/15 p-1 rounded-md mb-2">
+              <form onSubmit={handleAuthSubmit} className="flex flex-col gap-4">
+                <div className="flex bg-surface-soft border border-hairline p-1" style={{ borderRadius: 8 }}>
                   <button
                     type="button"
                     onClick={() => setAuthMethod('phone')}
-                    className={`flex-1 py-1 rounded-[4px] text-[10px] font-semibold uppercase tracking-wider transition-colors ${
+                    className={`flex-1 py-2 text-sm font-medium transition-all cursor-pointer ${
                       authMethod === 'phone'
-                        ? 'bg-gold-warm text-maroon-deep'
-                        : 'text-gold-warm/60'
+                        ? 'bg-white text-ink shadow-sm'
+                        : 'text-muted'
                     }`}
+                    style={{ borderRadius: 6 }}
                   >
                     Phone
                   </button>
                   <button
                     type="button"
                     onClick={() => setAuthMethod('email')}
-                    className={`flex-1 py-1 rounded-[4px] text-[10px] font-semibold uppercase tracking-wider transition-colors ${
+                    className={`flex-1 py-2 text-sm font-medium transition-all cursor-pointer ${
                       authMethod === 'email'
-                        ? 'bg-gold-warm text-maroon-deep'
-                        : 'text-gold-warm/60'
+                        ? 'bg-white text-ink shadow-sm'
+                        : 'text-muted'
                     }`}
+                    style={{ borderRadius: 6 }}
                   >
                     Email
                   </button>
@@ -617,26 +649,28 @@ export default function BuilderPage({ params }: { params: Promise<{ templateId: 
 
                 {authMethod === 'phone' ? (
                   <div>
-                    <label className="block text-gold-warm/75 text-[10px] uppercase mb-1 font-semibold">Phone Number</label>
+                    <label className={labelCls}>Phone Number</label>
                     <input
                       type="tel"
                       required
                       value={phone}
                       onChange={e => setPhone(e.target.value)}
                       placeholder="+91 XXXXX XXXXX"
-                      className="w-full bg-maroon-deep/45 border border-gold-warm/30 rounded py-2 px-3 focus:outline-none focus:border-gold-warm text-gold-warm text-xs"
+                      className={inputCls}
+                      style={inputStyle}
                     />
                   </div>
                 ) : (
                   <div>
-                    <label className="block text-gold-warm/75 text-[10px] uppercase mb-1 font-semibold">Email Address</label>
+                    <label className={labelCls}>Email Address</label>
                     <input
                       type="email"
                       required
                       value={email}
                       onChange={e => setEmail(e.target.value)}
                       placeholder="you@example.com"
-                      className="w-full bg-maroon-deep/45 border border-gold-warm/30 rounded py-2 px-3 focus:outline-none focus:border-gold-warm text-gold-warm text-xs"
+                      className={inputCls}
+                      style={inputStyle}
                     />
                   </div>
                 )}
@@ -644,15 +678,16 @@ export default function BuilderPage({ params }: { params: Promise<{ templateId: 
                 <button
                   type="submit"
                   disabled={authLoading}
-                  className="w-full bg-gold-warm text-maroon-deep font-sans font-bold hover:scale-102 active:scale-98 transition-transform py-2.5 rounded shadow-lg mt-2 cursor-pointer"
+                  className="w-full bg-primary text-on-primary font-medium hover:bg-primary-active transition-colors py-3 mt-1 cursor-pointer disabled:opacity-50"
+                  style={{ borderRadius: 8, height: 48 }}
                 >
                   {authLoading ? 'Sending...' : 'Send OTP Verification'}
                 </button>
               </form>
             ) : (
-              <form onSubmit={handleAuthVerify} className="flex flex-col gap-4 text-xs">
+              <form onSubmit={handleAuthVerify} className="flex flex-col gap-4">
                 <div>
-                  <label className="block text-gold-warm/75 text-[10px] uppercase mb-1 font-semibold text-center">
+                  <label className={`${labelCls} text-center`}>
                     Enter Verification Code
                   </label>
                   <input
@@ -662,27 +697,29 @@ export default function BuilderPage({ params }: { params: Promise<{ templateId: 
                     value={otpCode}
                     onChange={e => setOtpCode(e.target.value)}
                     placeholder="6-digit PIN"
-                    className="w-full bg-maroon-deep/45 border border-gold-warm/30 rounded py-2.5 text-center tracking-[0.3em] font-mono text-gold-warm text-sm"
+                    className="w-full bg-white border border-hairline py-3 text-center tracking-[0.3em] font-mono text-ink text-lg placeholder-muted-soft focus:outline-none focus:border-ink focus:border-2"
+                    style={{ borderRadius: 8, height: 56 }}
                   />
-                  <p className="text-[10px] text-gold-warm/40 text-center mt-2">
+                  <p className="text-xs text-muted text-center mt-2" style={{ fontWeight: 400 }}>
                     Check your backend terminal console log printout!
                   </p>
                 </div>
 
-                <div className="flex flex-col gap-1.5 mt-2">
+                <div className="flex flex-col gap-2 mt-1">
                   <button
                     type="submit"
                     disabled={authLoading}
-                    className="w-full bg-gold-warm text-maroon-deep font-sans font-bold hover:scale-102 active:scale-98 transition-transform py-2.5 rounded shadow-lg cursor-pointer"
+                    className="w-full bg-primary text-on-primary font-medium hover:bg-primary-active transition-colors py-3 cursor-pointer disabled:opacity-50"
+                    style={{ borderRadius: 8, height: 48 }}
                   >
                     {authLoading ? 'Verifying...' : 'Verify & Generate Preview'}
                   </button>
                   <button
                     type="button"
                     onClick={() => setAuthStage('INPUT')}
-                    className="text-center text-[9px] uppercase font-bold text-gold-warm/65 hover:text-gold-warm py-1.5 transition-colors cursor-pointer"
+                    className="text-center text-sm text-muted hover:text-ink py-2 transition-colors cursor-pointer font-medium"
                   >
-                    Click to go Back
+                    Go Back
                   </button>
                 </div>
               </form>

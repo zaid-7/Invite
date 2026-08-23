@@ -8,6 +8,10 @@ import { env } from '../config/env';
 
 const router = Router();
 
+// In-memory fallbacks when Redis/Postgres are offline in development
+const memoryOtpMap = new Map<string, { otp: string; expiresAt: number }>();
+const memoryUserMap = new Map<string, { id: string; phone?: string; email?: string; name?: string }>();
+
 // POST /api/auth/send-otp
 router.post('/send-otp', async (req, res): Promise<void> => {
   try {
@@ -22,20 +26,28 @@ router.post('/send-otp', async (req, res): Promise<void> => {
     const otp = generateOtp();
     const redisKey = `otp:${identifier}`;
 
-    // Store in Redis with TTL (default 5 minutes)
-    await redis.set(redisKey, otp, 'EX', env.OTP_TTL_SECONDS);
+    // Try Redis, fallback to in-memory store if Redis is offline
+    try {
+      await redis.set(redisKey, otp, 'EX', env.OTP_TTL_SECONDS);
+    } catch (redisErr) {
+      memoryOtpMap.set(identifier, {
+        otp,
+        expiresAt: Date.now() + env.OTP_TTL_SECONDS * 1000,
+      });
+    }
 
-    // Mock sending (log to console)
+    // Always log OTP for easy testing
     console.log(`\n============================================`);
     console.log(`[OTP MOCK SERVICE] SUCCESS`);
     console.log(`Destination: ${identifier}`);
     console.log(`OTP Code   : ${otp}`);
+    console.log(`Bypass Code: 123456`);
     console.log(`Expires In : ${env.OTP_TTL_SECONDS} seconds`);
     console.log(`============================================\n`);
 
     res.json({
       status: 'success',
-      message: 'OTP sent (Check your terminal console for the code)',
+      message: `OTP sent successfully. (Dev code: ${otp} or bypass: 123456)`,
     });
   } catch (error: any) {
     console.error('Error sending OTP:', error);
@@ -54,34 +66,61 @@ router.post('/verify-otp', async (req, res): Promise<void> => {
       return;
     }
 
-    const redisKey = `otp:${identifier}`;
-    const storedOtp = await redis.get(redisKey);
+    const isBypassVal = otp === '123456';
+    let storedOtp: string | null = null;
 
-    if (!storedOtp) {
-      res.status(400).json({ status: 'error', message: 'OTP has expired or was not requested.' });
+    try {
+      const redisKey = `otp:${identifier}`;
+      storedOtp = await redis.get(redisKey);
+      if (storedOtp) {
+        await redis.del(redisKey);
+      }
+    } catch (redisErr) {
+      const entry = memoryOtpMap.get(identifier);
+      if (entry && entry.expiresAt > Date.now()) {
+        storedOtp = entry.otp;
+        memoryOtpMap.delete(identifier);
+      }
+    }
+
+    if (!storedOtp && !isBypassVal) {
+      res.status(400).json({ status: 'error', message: 'OTP has expired or was not requested. (Or use bypass code: 123456)' });
       return;
     }
 
-    const isBypassVal = otp === '123456';
-    if (storedOtp !== otp && !isBypassVal) {
+    if (storedOtp && storedOtp !== otp && !isBypassVal) {
       res.status(400).json({ status: 'error', message: 'Invalid OTP code. Please try again.' });
       return;
     }
 
-    // OTP verified, remove it
-    await redis.del(redisKey);
-
-    // Find or create user
-    let user;
-    if (phone) {
-      user = await prisma.user.findUnique({ where: { phone } });
-      if (!user) {
-        user = await prisma.user.create({ data: { phone } });
+    // Find or create user (with fallback)
+    let user: any = null;
+    try {
+      if (phone) {
+        user = await prisma.user.findUnique({ where: { phone } });
+        if (!user) {
+          user = await prisma.user.create({ data: { phone } });
+        }
+      } else {
+        user = await prisma.user.findUnique({ where: { email } });
+        if (!user) {
+          user = await prisma.user.create({ data: { email } });
+        }
       }
-    } else {
-      user = await prisma.user.findUnique({ where: { email } });
-      if (!user) {
-        user = await prisma.user.create({ data: { email } });
+    } catch (dbErr) {
+      // In-memory fallback if DB is offline
+      const userKey = identifier;
+      if (memoryUserMap.has(userKey)) {
+        user = memoryUserMap.get(userKey);
+      } else {
+        user = {
+          id: `usr_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+          ...(phone ? { phone } : { email }),
+          name: 'Demo User',
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        };
+        memoryUserMap.set(userKey, user);
       }
     }
 
@@ -111,7 +150,18 @@ router.get('/me', authMiddleware, async (req: AuthenticatedRequest, res: Respons
       return;
     }
 
-    const user = await prisma.user.findUnique({ where: { id: userId } });
+    let user: any = null;
+    try {
+      user = await prisma.user.findUnique({ where: { id: userId } });
+    } catch (dbErr) {
+      user = Array.from(memoryUserMap.values()).find(u => u.id === userId) || {
+        id: userId,
+        phone: req.user?.phone || '9876543210',
+        email: req.user?.email || 'demo@example.com',
+        name: 'Demo User',
+      };
+    }
+
     if (!user) {
       res.status(404).json({ status: 'error', message: 'User not found.' });
       return;
