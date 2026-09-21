@@ -11,8 +11,8 @@ export const Navbar: React.FC = () => {
   const [userPhone, setUserPhone] = useState('');
 
   useEffect(() => {
-    const token = localStorage.getItem('mandap_token');
-    const userRaw = localStorage.getItem('mandap_user');
+    const token = localStorage.getItem('invitecraft_token');
+    const userRaw = localStorage.getItem('invitecraft_user');
     if (token && userRaw) {
       setIsLoggedIn(true);
       const user = JSON.parse(userRaw);
@@ -35,10 +35,10 @@ export const Navbar: React.FC = () => {
           <div
             className="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-on-primary font-bold text-sm transition-colors group-hover:bg-primary-active"
           >
-            M
+            I
           </div>
           <span className="text-xl font-semibold tracking-tight text-ink">
-            Mandap
+            InviteCraft
           </span>
         </Link>
 

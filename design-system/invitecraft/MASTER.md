@@ -6,7 +6,7 @@
 
 ---
 
-**Project:** Mandap
+**Project:** InviteCraft
 **Generated:** 2026-08-01 15:24:22
 **Category:** Luxury/Premium Brand
 

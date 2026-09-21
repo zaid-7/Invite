@@ -1,6 +1,6 @@
-# Mandap — Premium Animated Invitation SaaS
+# InviteCraft — Premium Animated Invitation SaaS
 
-Mandap is a premium, design-first digital invitation SaaS platform designed for traditional Indian celebrations. It allows users to write custom couple details and times, generate watermarked ephemeral previews, unlock templates via integrated payment, and capture guest RSVP rosters on dynamic sharing endpoints.
+InviteCraft ([invitescraft.live](https://invitescraft.live)) is a premium, design-first digital invitation SaaS platform designed for traditional Indian celebrations. It allows users to write custom couple details and times, generate watermarked ephemeral previews, unlock templates via integrated payment, and capture guest RSVP rosters on dynamic sharing endpoints.
 
 ---
 

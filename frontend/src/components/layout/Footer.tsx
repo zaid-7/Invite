@@ -11,10 +11,10 @@ export const Footer: React.FC = () => {
           <div className="md:col-span-1">
             <Link href="/" className="flex items-center gap-2 mb-3">
               <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-on-primary font-bold text-sm">
-                M
+                I
               </div>
               <span className="text-lg font-semibold tracking-tight text-ink">
-                Mandap
+                InviteCraft
               </span>
             </Link>
             <p className="text-sm text-muted leading-relaxed max-w-xs">
@@ -48,9 +48,9 @@ export const Footer: React.FC = () => {
             </div>
           </div>
 
-          {/* Mandap */}
+          {/* InviteCraft */}
           <div>
-            <h4 className="text-base font-medium text-ink mb-4">Mandap</h4>
+            <h4 className="text-base font-medium text-ink mb-4">InviteCraft</h4>
             <div className="flex flex-col gap-2.5">
               <Link href="/" className="text-sm text-body-text hover:text-ink transition-colors hover:underline">
                 About Us
@@ -67,7 +67,7 @@ export const Footer: React.FC = () => {
       <div className="border-t border-hairline-soft">
         <div className="max-w-7xl mx-auto px-6 lg:px-10 py-4 flex flex-col md:flex-row justify-between items-center gap-3">
           <span className="text-xs text-muted-soft">
-            &copy; {new Date().getFullYear()} Mandap, Inc. All rights reserved.
+            &copy; {new Date().getFullYear()} InviteCraft, Inc. All rights reserved.
           </span>
           <div className="flex items-center gap-4 text-xs text-muted-soft">
             <span>English (IN)</span>

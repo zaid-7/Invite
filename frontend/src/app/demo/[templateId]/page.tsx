@@ -53,6 +53,7 @@ export default function DemoPage({ params }: { params: Promise<{ templateId: str
   const { templateId } = use(params);
 
   const [templateName, setTemplateName] = useState<string>('Digital Invitation');
+  const [rendererRef, setRendererRef] = useState<string>(templateId);
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState<any>(null);
 
@@ -62,7 +63,11 @@ export default function DemoPage({ params }: { params: Promise<{ templateId: str
         const res = await api.getTemplate(templateId);
         if (res.status === 'success' && res.template) {
           setTemplateName(res.template.name);
-          
+          // Manifest/renderer components are keyed by slug, but the route
+          // param (and browse page links) use the database id.
+          const slug = res.template.slug || templateId;
+          setRendererRef(slug);
+
           // Seed defaults from schema or fallback
           const fields = res.template.schemaJson?.fields || [];
           const groom = fields.find((f: any) => f.name === 'groomName')?.defaultValue;
@@ -73,7 +78,7 @@ export default function DemoPage({ params }: { params: Promise<{ templateId: str
           const defaultEvents = fields.find((f: any) => f.name === 'events')?.defaultValue;
           const music = fields.find((f: any) => f.name === 'musicUrl')?.defaultValue;
 
-          const fallback = defaultDemoData[templateId] || defaultDemoData['default'];
+          const fallback = defaultDemoData[slug] || defaultDemoData['default'];
 
           setFormData({
             groomName: groom || fallback.groomName,
@@ -147,7 +152,7 @@ export default function DemoPage({ params }: { params: Promise<{ templateId: str
       {/* Live Interactive Template Renderer */}
       <main className="flex-1">
         <TemplateRenderer
-          rendererRef={templateId}
+          rendererRef={rendererRef}
           data={formData}
           mode="preview"
         />

@@ -9,7 +9,8 @@ interface Props {
 
 async function fetchInvitationData(slug: string) {
   try {
-    const res = await fetch(`http://localhost:4000/api/invitations/${slug}`, {
+    const backendUrl = process.env.BACKEND_URL || process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000/api';
+    const res = await fetch(`${backendUrl}/invitations/${slug}`, {
       cache: 'no-store', // force fetch fresh
     });
     if (!res.ok) return null;
@@ -27,14 +28,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (!invitation) {
     return {
-      title: 'Invitation Not Found — Mandap',
+      title: 'Invitation Not Found — InviteCraft',
     };
   }
 
   const titleString = invitation.ogTitle || 'Wedding Celebration Invitation';
 
   return {
-    title: `${titleString} — Mandap`,
+    title: `${titleString} — InviteCraft`,
     description: `You have been cordially invited to celebrate with us. View timings, venues, and RSVP online.`,
     openGraph: {
       title: titleString,

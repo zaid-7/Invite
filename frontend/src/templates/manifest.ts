@@ -36,7 +36,7 @@ export const templateManifest: TemplateManifestEntry[] = [
     id: 'royal-elegance-classic',
     name: 'Magestic Love',
     tier: 'classic',
-    thumbnail: '/templates/thumbnails/royal-elegance.jpg',
+    thumbnail: '/templates/thumbnails/royal-elegance-classic.jpg',
     features: ['scratchReveal', 'countdown', 'doorReveal3d', 'rsvp', 'musicPlayer'],
     Component: dynamic(() => import('./classic/royal-elegance-classic'), { ssr: false }),
   },

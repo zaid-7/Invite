@@ -1,7 +1,7 @@
 {
-  "name": "mandap-backend",
+  "name": "invitecraft-backend",
   "version": "1.0.0",
-  "description": "Backend API for Mandap Digital Invitation SaaS",
+  "description": "Backend API for InviteCraft Digital Invitation SaaS",
   "main": "dist/index.js",
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
@@ -31,5 +31,14 @@
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.4.5"
+  },
+  "allowScripts": {
+    "@prisma/client@5.22.0": true,
+    "@prisma/engines@5.22.0": true,
+    "fsevents@2.3.3": true,
+    "prisma@5.22.0": true
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
   }
 }

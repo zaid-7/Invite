@@ -81,7 +81,7 @@ export default function LoginPage() {
             <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-4">
               <KeyRound size={24} />
             </div>
-            <h1 className="text-2xl font-bold text-ink">Welcome to Mandap</h1>
+            <h1 className="text-2xl font-bold text-ink">Welcome to InviteCraft</h1>
             <p className="text-sm text-muted mt-1.5" style={{ fontWeight: 400 }}>
               {stage === 'INPUT' ? 'Sign in to create your invitation' : 'Enter the verification code'}
             </p>
