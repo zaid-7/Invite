@@ -47,7 +47,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-6 lg:px-10">
           <div className="text-center mb-14">
             <h2 className="text-2xl md:text-3xl font-bold text-ink mb-3" style={{ lineHeight: 1.25 }}>
-              Why Choose Mandap?
+              Why Choose InviteCraft?
             </h2>
             <p className="text-base text-muted max-w-md mx-auto" style={{ fontWeight: 400 }}>
               Combining heritage design aesthetics with modern web technologies.
@@ -118,15 +118,15 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto items-stretch">
-            {/* Basic card */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto items-stretch">
+            {/* Classic card */}
             <div
               className="bg-white border border-hairline p-8 flex flex-col relative"
               style={{ borderRadius: 14 }}
             >
-              <span className="text-xs text-muted font-semibold uppercase tracking-wider mb-2">Basic Package</span>
+              <span className="text-xs text-muted font-semibold uppercase tracking-wider mb-2">Classic</span>
               <div className="flex items-baseline gap-1.5 mb-6 text-ink">
-                <span className="text-3xl font-bold">₹299</span>
+                <span className="text-3xl font-bold">₹899</span>
                 <span className="text-sm text-muted" style={{ fontWeight: 400 }}>/ single card</span>
               </div>
 
@@ -142,11 +142,11 @@ export default function Home() {
                 className="w-full text-center bg-white text-ink border border-ink font-medium hover:bg-surface-soft transition-colors py-3 text-sm"
                 style={{ borderRadius: 8 }}
               >
-                Choose Basic
+                Choose Classic
               </Link>
             </div>
 
-            {/* Premium card */}
+            {/* Royal card */}
             <div
               className="bg-white border-2 border-ink p-8 flex flex-col relative"
               style={{ borderRadius: 14, transform: 'translateY(-4px)' }}
@@ -158,9 +158,9 @@ export default function Home() {
                 Most Popular
               </span>
 
-              <span className="text-xs text-muted font-semibold uppercase tracking-wider mb-2">Premium Royal</span>
+              <span className="text-xs text-muted font-semibold uppercase tracking-wider mb-2">Royal</span>
               <div className="flex items-baseline gap-1.5 mb-6 text-ink">
-                <span className="text-4xl font-bold">₹499</span>
+                <span className="text-4xl font-bold">₹1299</span>
                 <span className="text-sm text-muted" style={{ fontWeight: 400 }}>/ single card</span>
               </div>
 
@@ -177,35 +177,7 @@ export default function Home() {
                 className="w-full text-center bg-primary text-on-primary font-medium hover:bg-primary-active transition-colors py-3 text-sm"
                 style={{ borderRadius: 8 }}
               >
-                Choose Premium
-              </Link>
-            </div>
-
-            {/* Deluxe card */}
-            <div
-              className="bg-white border border-hairline p-8 flex flex-col relative"
-              style={{ borderRadius: 14 }}
-            >
-              <span className="text-xs text-muted font-semibold uppercase tracking-wider mb-2">Deluxe Palace</span>
-              <div className="flex items-baseline gap-1.5 mb-6 text-ink">
-                <span className="text-3xl font-bold">₹999</span>
-                <span className="text-sm text-muted" style={{ fontWeight: 400 }}>/ single card</span>
-              </div>
-
-              <ul className="flex flex-col gap-3 text-sm text-body-text flex-1 mb-8" style={{ fontWeight: 400 }}>
-                <li className="flex items-center gap-2.5"><Check size={16} className="text-primary shrink-0" /> 2 years active online hosting</li>
-                <li className="flex items-center gap-2.5"><Check size={16} className="text-primary shrink-0" /> Premium design + customization support</li>
-                <li className="flex items-center gap-2.5"><Check size={16} className="text-primary shrink-0" /> Custom sound file uploading</li>
-                <li className="flex items-center gap-2.5"><Check size={16} className="text-primary shrink-0" /> RSVP management analytics exports</li>
-                <li className="flex items-center gap-2.5"><Check size={16} className="text-primary shrink-0" /> Priority account representatives</li>
-              </ul>
-
-              <Link
-                href="/browse"
-                className="w-full text-center bg-white text-ink border border-ink font-medium hover:bg-surface-soft transition-colors py-3 text-sm"
-                style={{ borderRadius: 8 }}
-              >
-                Choose Deluxe
+                Choose Royal
               </Link>
             </div>
           </div>

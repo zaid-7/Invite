@@ -104,7 +104,7 @@ export default function RoyalHeritageTemplate({ data, mode, slug }: TemplateProp
     e.preventDefault();
     if (mode === 'live' && slug) {
       try {
-        const res = await fetch(`http://localhost:4000/api/invitations/${slug}/rsvp`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000/api'}/invitations/${slug}/rsvp`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({

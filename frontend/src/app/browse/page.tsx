@@ -16,24 +16,31 @@ const EXCLUDED_TEMPLATES = [
   'cinematic-royal',
 ];
 
-// Royal template thumbnail poster images (generated from background videos)
-const ROYAL_THUMBNAILS: Record<string, string> = {
+// Static thumbnail images for every template, keyed by slug.
+// Classic thumbnails are captured from the live invitation design; Royal
+// thumbnails double as the <video> poster frame while the clip loads.
+const TEMPLATE_THUMBNAILS: Record<string, string> = {
+  'emerald-noir': '/templates/thumbnails/emerald-noir.jpg',
+  'crimson-royale': '/templates/thumbnails/crimson-royale.jpg',
+  'royal-elegance-classic': '/templates/thumbnails/royal-elegance-classic.jpg',
+  'garden-romance': '/templates/thumbnails/garden-romance.jpg',
+  'modern-minimal': '/templates/thumbnails/modern-minimal.jpg',
+  'mughal-emerald': '/templates/thumbnails/mughal-emerald.jpg',
+  'rose-gold-blush': '/templates/thumbnails/rose-gold-blush.jpg',
+  'midnight-royal': '/templates/thumbnails/midnight-royal.jpg',
   'royal-heritage': '/templates/thumbnails/royal-heritage.jpg',
   'royal-prestige': '/templates/thumbnails/royal-prestige.jpg',
   'royal-imperial': '/templates/thumbnails/royal-imperial.jpg',
   'royal-elegance-royal': '/templates/thumbnails/royal-elegance-royal.jpg',
 };
 
-// Classic template theme color palettes (from theme.ts)
-const CLASSIC_THEME_COLORS: Record<string, { bg: string; surface: string; accent: string; secondary: string; ink: string }> = {
-  'emerald-noir':          { bg: '#0F1B16', surface: '#16261F', accent: '#C9A467', secondary: '#1F3A2E', ink: '#F3EFE8' },
-  'crimson-royale':        { bg: '#121212', surface: '#1E1E1E', accent: '#D4AF37', secondary: '#8B0000', ink: '#F5F5F5' },
-  'royal-elegance-classic':{ bg: '#FAF6EE', surface: '#F0EAD6', accent: '#C5A059', secondary: '#5C1B24', ink: '#2C221E' },
-  'garden-romance':        { bg: '#F4F7F4', surface: '#E4EAE4', accent: '#C29B38', secondary: '#5B705B', ink: '#2A332A' },
-  'modern-minimal':        { bg: '#FAF9F6', surface: '#FFFFFF', accent: '#1A1A1A', secondary: '#7A7A7A', ink: '#121212' },
-  'mughal-emerald':        { bg: '#0B241C', surface: '#123C2F', accent: '#E5C060', secondary: '#6C1B2B', ink: '#F4F0E6' },
-  'rose-gold-blush':       { bg: '#FFF5F5', surface: '#FFEBEB', accent: '#B76E79', secondary: '#8F4D56', ink: '#3E2723' },
-  'midnight-royal':        { bg: '#0B1325', surface: '#14213D', accent: '#D4AF37', secondary: '#FCA311', ink: '#E2E8F0' },
+// Royal templates loop a short clip of their own hero background video on the card,
+// matching the video each template plays on its live invitation page.
+const ROYAL_VIDEOS: Record<string, string> = {
+  'royal-heritage': '/royal-videos/royal-heritage.mp4',
+  'royal-prestige': '/royal-videos/royal-prestige.mp4',
+  'royal-imperial': '/royal-videos/rose-gold-blush.mp4',
+  'royal-elegance-royal': '/royal-videos/royal-elegance-royal.mp4',
 };
 
 export default function BrowsePage() {
@@ -82,8 +89,7 @@ export default function BrowsePage() {
 
   // Royal templates: video background templates (tier === 'PREMIUM')
   const isRoyalTemplate = (tmpl: Template) => {
-    const id = tmpl.id || tmpl.slug || '';
-    return tmpl.tier === 'PREMIUM' || id === 'cinematic-royal';
+    return tmpl.tier === 'PREMIUM' || tmpl.slug === 'cinematic-royal';
   };
 
   const filteredTemplates = templates
@@ -121,7 +127,7 @@ export default function BrowsePage() {
                   : 'text-muted hover:text-ink font-normal'
               }`}
             >
-              Mandap Classics
+              InviteCraft Classics
             </button>
             <button
               type="button"
@@ -133,7 +139,7 @@ export default function BrowsePage() {
               }`}
             >
               <Crown size={16} className={category === 'royal' ? 'text-primary' : 'text-muted'} />
-              Mandap Royal
+              InviteCraft Royal
             </button>
           </div>
         </div>
@@ -177,16 +183,15 @@ export default function BrowsePage() {
             <Sparkles size={36} className="text-muted-soft mx-auto mb-3" />
             <h3 className="text-lg font-semibold text-ink mb-1">No templates found</h3>
             <p className="text-sm text-muted" style={{ fontWeight: 400 }}>
-              Try adjusting your Invitation Type selection or switch between Mandap Classics and Mandap Royal.
+              Try adjusting your Invitation Type selection or switch between InviteCraft Classics and InviteCraft Royal.
             </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
             {filteredTemplates.map(tmpl => {
-              const templateId = tmpl.id || tmpl.slug || '';
               const isRoyal = isRoyalTemplate(tmpl);
-              const classicColors = CLASSIC_THEME_COLORS[templateId];
-              const royalThumb = ROYAL_THUMBNAILS[templateId];
+              const thumbnail = TEMPLATE_THUMBNAILS[tmpl.slug];
+              const royalVideo = ROYAL_VIDEOS[tmpl.slug];
 
               return (
                 <div
@@ -224,15 +229,18 @@ export default function BrowsePage() {
                   </div>
 
                   {/* Card Visual Area */}
-                  {isRoyal && royalThumb ? (
-                    /* Royal template: cinematic thumbnail image */
+                  {isRoyal && royalVideo ? (
+                    /* Royal template: looping clip of the template's own hero video */
                     <div className="relative aspect-video overflow-hidden shrink-0">
-                      <Image
-                        src={royalThumb}
-                        alt={tmpl.name}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-500"
-                        sizes="(max-width: 768px) 100vw, 50vw"
+                      <video
+                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        src={royalVideo}
+                        poster={thumbnail}
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
+                        preload="metadata"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
                       <div className="absolute bottom-0 left-0 right-0 p-5 z-10">
@@ -244,42 +252,25 @@ export default function BrowsePage() {
                         </span>
                       </div>
                     </div>
-                  ) : classicColors ? (
-                    /* Classic template: theme color preview */
-                    <div
-                      className="relative aspect-video overflow-hidden shrink-0 flex flex-col items-center justify-center p-6 select-none"
-                      style={{ background: classicColors.bg }}
-                    >
-                      {/* Decorative accent ring */}
-                      <div
-                        className="absolute w-32 h-32 rounded-full border-2 opacity-30"
-                        style={{ borderColor: classicColors.accent, top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}
+                  ) : thumbnail ? (
+                    /* Thumbnail image captured from the live template design */
+                    <div className="relative aspect-video overflow-hidden shrink-0">
+                      <Image
+                        src={thumbnail}
+                        alt={tmpl.name}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                        sizes="(max-width: 768px) 100vw, 50vw"
                       />
-                      <div
-                        className="absolute w-48 h-48 rounded-full border opacity-15"
-                        style={{ borderColor: classicColors.accent, top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}
-                      />
-
-                      {/* Theme color palette strip */}
-                      <div className="flex gap-2 mb-4 z-10">
-                        <div className="w-5 h-5 rounded-full border border-white/20 shadow-sm" style={{ background: classicColors.bg }} title="Background" />
-                        <div className="w-5 h-5 rounded-full border border-white/20 shadow-sm" style={{ background: classicColors.surface }} title="Surface" />
-                        <div className="w-5 h-5 rounded-full border border-white/20 shadow-sm" style={{ background: classicColors.accent }} title="Accent" />
-                        <div className="w-5 h-5 rounded-full border border-white/20 shadow-sm" style={{ background: classicColors.secondary }} title="Secondary" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+                      <div className="absolute bottom-0 left-0 right-0 p-5 z-10">
+                        <span className="text-2xl md:text-3xl font-bold text-white drop-shadow-lg block" style={{ letterSpacing: '-0.01em' }}>
+                          {tmpl.name}
+                        </span>
+                        <span className="text-xs text-white/70 font-medium tracking-wider mt-1 block">
+                          {tmpl.rendererRef}
+                        </span>
                       </div>
-
-                      <span
-                        className="text-2xl md:text-3xl font-bold z-10 mt-1"
-                        style={{ color: classicColors.ink, letterSpacing: '-0.01em' }}
-                      >
-                        {tmpl.name}
-                      </span>
-                      <span
-                        className="text-xs font-medium tracking-wider z-10 mt-2 px-3 py-1 border"
-                        style={{ color: classicColors.accent, borderColor: classicColors.accent + '44', borderRadius: 9999 }}
-                      >
-                        {tmpl.rendererRef}
-                      </span>
                     </div>
                   ) : (
                     /* Fallback: plain surface */

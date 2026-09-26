@@ -98,7 +98,7 @@ export default function PreviewPage({ params }: { params: Promise<{ token: strin
               key: razorpayKeyId,
               amount: order.amount,
               currency: order.currency,
-              name: 'Mandap',
+              name: 'InviteCraft',
               description: 'Vanity Digital Invitation Unlock',
               order_id: order.gatewayRef,
               handler: async function (response: any) {

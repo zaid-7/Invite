@@ -3,12 +3,12 @@ version: '3.8'
 services:
   postgres:
     image: postgres:15-alpine
-    container_name: mandap-postgres
+    container_name: invitecraft-postgres
     restart: unless-stopped
     environment:
-      POSTGRES_DB: mandap
-      POSTGRES_USER: mandap_user
-      POSTGRES_PASSWORD: mandap_dev_pass
+      POSTGRES_DB: invitecraft
+      POSTGRES_USER: invitecraft_user
+      POSTGRES_PASSWORD: invitecraft_dev_pass
     ports:
       - "5432:5432"
     volumes:
@@ -16,7 +16,7 @@ services:
 
   redis:
     image: redis:7-alpine
-    container_name: mandap-redis
+    container_name: invitecraft-redis
     restart: unless-stopped
     ports:
       - "6379:6379"

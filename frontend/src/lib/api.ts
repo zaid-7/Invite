@@ -2,7 +2,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000/a
 
 // Helper to get authorization header
 const getHeaders = (headers: HeadersInit = {}) => {
-  const token = typeof window !== 'undefined' ? localStorage.getItem('mandap_token') : null;
+  const token = typeof window !== 'undefined' ? localStorage.getItem('invitecraft_token') : null;
   return {
     'Content-Type': 'application/json',
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -29,8 +29,8 @@ export const api = {
     });
     const data = await res.json();
     if (data.status === 'success' && data.token) {
-      localStorage.setItem('mandap_token', data.token);
-      localStorage.setItem('mandap_user', JSON.stringify(data.user));
+      localStorage.setItem('invitecraft_token', data.token);
+      localStorage.setItem('invitecraft_user', JSON.stringify(data.user));
     }
     return data;
   },
@@ -44,8 +44,8 @@ export const api = {
   },
 
   logout() {
-    localStorage.removeItem('mandap_token');
-    localStorage.removeItem('mandap_user');
+    localStorage.removeItem('invitecraft_token');
+    localStorage.removeItem('invitecraft_user');
   },
 
   // Templates

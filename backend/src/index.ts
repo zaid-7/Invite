@@ -25,7 +25,7 @@ async function bootstrap() {
   // Start Express server
   app.listen(port, () => {
     console.log(`\n===========================================`);
-    console.log(`[Mandap Backend] server running on port ${port}`);
+    console.log(`[InviteCraft Backend] server running on port ${port}`);
     console.log(`Environment: ${env.NODE_ENV}`);
     console.log(`API URL    : ${env.BACKEND_URL}`);
     console.log(`Ready for requests!`);

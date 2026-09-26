@@ -51,13 +51,14 @@ const jost = Jost({
 });
 
 export const metadata: Metadata = {
-  title: 'Mandap — Premium Digital Invitations',
+  title: 'InviteCraft — Premium Digital Invitations',
   description: 'Create and share stunning, animated digital invitations for weddings, birthdays, and festivals with authentic Indian heritage templates.',
-  metadataBase: new URL('http://localhost:3000'),
+  metadataBase: new URL('https://invitescraft.live'),
   openGraph: {
-    title: 'Mandap — Premium Digital Invitations',
+    title: 'InviteCraft — Premium Digital Invitations',
     description: 'Create and share stunning, animated digital invitations for weddings, birthdays, and festivals.',
-    siteName: 'Mandap',
+    siteName: 'InviteCraft',
+    url: 'https://invitescraft.live',
     locale: 'en_IN',
     type: 'website',
   },

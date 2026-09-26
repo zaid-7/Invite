@@ -111,7 +111,7 @@ export default function BuilderPage({ params }: { params: Promise<{ templateId: 
 
   const handleGeneratePreviewTrigger = async () => {
     // Check auth first
-    const token = localStorage.getItem('mandap_token');
+    const token = localStorage.getItem('invitecraft_token');
     if (!token) {
       setAuthStage('INPUT');
       setAuthError('');
