@@ -18,9 +18,14 @@ const app = express();
 app.use(helmet());
 
 // Enable CORS
+// FRONTEND_URL may be a comma-separated list (e.g. apex + www domain in production)
+const allowedOrigins = [
+  ...env.FRONTEND_URL.split(',').map(origin => origin.trim()).filter(Boolean),
+  'http://localhost:3000',
+];
 app.use(
   cors({
-    origin: [env.FRONTEND_URL, 'http://localhost:3000'],
+    origin: allowedOrigins,
     credentials: true,
   })
 );
