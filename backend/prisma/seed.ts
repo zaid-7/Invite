@@ -151,7 +151,7 @@ async function main() {
       rendererRef: 'hindu-royal-wedding',
       thumbnailUrl: '/templates/thumbnails/hindu-royal.jpg',
       previewUrl: '/templates/previews/hindu-royal.gif',
-      price: 49900, // Rs 499.00 in paise
+      price: 129900, // Rs 1299.00 in paise
       tier: 'PREMIUM',
       status: 'ACTIVE',
       isFeatured: true,
@@ -172,7 +172,7 @@ async function main() {
       rendererRef: 'muslim-nikah-elegant',
       thumbnailUrl: '/templates/thumbnails/muslim-nikah.jpg',
       previewUrl: '/templates/previews/muslim-nikah.gif',
-      price: 49900, // Rs 499.00 in paise
+      price: 129900, // Rs 1299.00 in paise
       tier: 'PREMIUM',
       status: 'ACTIVE',
       isFeatured: true,
@@ -193,7 +193,7 @@ async function main() {
       rendererRef: 'royal-prestige',
       thumbnailUrl: '/templates/thumbnails/royal-prestige.jpg',
       previewUrl: '/templates/previews/royal-prestige.gif',
-      price: 59900, // Rs 599.00 in paise
+      price: 129900, // Rs 1299.00 in paise
       tier: 'PREMIUM',
       status: 'ACTIVE',
       isFeatured: true,
@@ -214,7 +214,7 @@ async function main() {
       rendererRef: 'emerald-noir',
       thumbnailUrl: '/templates/thumbnails/emerald-noir.jpg',
       previewUrl: '/templates/previews/emerald-noir.gif',
-      price: 39900, // Rs 399.00 in paise
+      price: 89900, // Rs 899.00 in paise
       tier: 'BASIC',
       status: 'ACTIVE',
       isFeatured: true,
@@ -235,7 +235,7 @@ async function main() {
       rendererRef: 'cinematic-royal',
       thumbnailUrl: '/templates/thumbnails/cinematic-royal.jpg',
       previewUrl: '/templates/previews/cinematic-royal.gif',
-      price: 59900,
+      price: 129900, // Rs 1299.00 in paise
       tier: 'PREMIUM',
       status: 'ACTIVE',
       isFeatured: true,
@@ -256,7 +256,7 @@ async function main() {
       rendererRef: 'crimson-royale',
       thumbnailUrl: '/templates/thumbnails/crimson-royale.jpg',
       previewUrl: '/templates/previews/crimson-royale.gif',
-      price: 39900,
+      price: 89900, // Rs 899.00 in paise
       tier: 'BASIC',
       status: 'ACTIVE',
       isFeatured: true,
@@ -277,7 +277,7 @@ async function main() {
       rendererRef: 'royal-elegance-classic',
       thumbnailUrl: '/templates/thumbnails/royal-elegance.jpg',
       previewUrl: '/templates/previews/royal-elegance-classic.gif',
-      price: 39900,
+      price: 89900, // Rs 899.00 in paise
       tier: 'BASIC',
       status: 'ACTIVE',
       isFeatured: true,
@@ -298,7 +298,7 @@ async function main() {
       rendererRef: 'garden-romance',
       thumbnailUrl: '/templates/thumbnails/garden-romance.jpg',
       previewUrl: '/templates/previews/garden-romance.gif',
-      price: 39900,
+      price: 89900, // Rs 899.00 in paise
       tier: 'BASIC',
       status: 'ACTIVE',
       isFeatured: true,
@@ -319,7 +319,7 @@ async function main() {
       rendererRef: 'modern-minimal',
       thumbnailUrl: '/templates/thumbnails/modern-minimal.jpg',
       previewUrl: '/templates/previews/modern-minimal.gif',
-      price: 39900,
+      price: 89900, // Rs 899.00 in paise
       tier: 'BASIC',
       status: 'ACTIVE',
       isFeatured: true,
@@ -340,7 +340,7 @@ async function main() {
       rendererRef: 'mughal-emerald',
       thumbnailUrl: '/templates/thumbnails/mughal-emerald.jpg',
       previewUrl: '/templates/previews/mughal-emerald.gif',
-      price: 39900,
+      price: 89900, // Rs 899.00 in paise
       tier: 'BASIC',
       status: 'ACTIVE',
       isFeatured: true,
@@ -361,7 +361,7 @@ async function main() {
       rendererRef: 'rose-gold-blush',
       thumbnailUrl: '/templates/thumbnails/rose-gold-blush.jpg',
       previewUrl: '/templates/previews/rose-gold-blush.gif',
-      price: 39900,
+      price: 89900, // Rs 899.00 in paise
       tier: 'BASIC',
       status: 'ACTIVE',
       isFeatured: true,
@@ -382,7 +382,7 @@ async function main() {
       rendererRef: 'midnight-royal',
       thumbnailUrl: '/templates/thumbnails/midnight-royal.jpg',
       previewUrl: '/templates/previews/midnight-royal.gif',
-      price: 39900,
+      price: 89900, // Rs 899.00 in paise
       tier: 'BASIC',
       status: 'ACTIVE',
       isFeatured: true,
@@ -403,7 +403,7 @@ async function main() {
       rendererRef: 'royal-imperial',
       thumbnailUrl: '/templates/thumbnails/royal-imperial.jpg',
       previewUrl: '/templates/previews/royal-imperial.gif',
-      price: 59900,
+      price: 129900, // Rs 1299.00 in paise
       tier: 'PREMIUM',
       status: 'ACTIVE',
       isFeatured: true,
@@ -424,7 +424,7 @@ async function main() {
       rendererRef: 'royal-heritage',
       thumbnailUrl: '/templates/thumbnails/royal-heritage.jpg',
       previewUrl: '/templates/previews/royal-heritage.gif',
-      price: 59900,
+      price: 129900, // Rs 1299.00 in paise
       tier: 'PREMIUM',
       status: 'ACTIVE',
       isFeatured: true,
@@ -445,7 +445,7 @@ async function main() {
       rendererRef: 'royal-elegance-royal',
       thumbnailUrl: '/templates/thumbnails/royal-elegance-royal.jpg',
       previewUrl: '/templates/previews/royal-elegance-royal.gif',
-      price: 59900,
+      price: 129900, // Rs 1299.00 in paise
       tier: 'PREMIUM',
       status: 'ACTIVE',
       isFeatured: true,
@@ -496,7 +496,7 @@ async function main() {
       data: {
         userId: demoUser.id,
         previewId: demoPreview.id,
-        amount: 59900,
+        amount: 129900, // Rs 1299.00 in paise
         paymentStatus: 'PAID',
         gatewayRef: `pay_${t.slug}_order`,
         paymentId: `pay_${t.slug}_payment_id`,
