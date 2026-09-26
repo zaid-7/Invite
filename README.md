@@ -65,3 +65,22 @@ npm run dev
 ## Authentication sandbox bypass
 For convenient dashboard preview creation and payment authorization matching, you can log in directly using the dev fallback OTP code:
 * **Mail / Phone OTP Bypass**: `123456`
+
+---
+
+## Production Deployment (free tier)
+
+Stack: **Vercel** (frontend) + **Render** (backend, via `render.yaml`) + **Neon** (Postgres) + **Upstash** (Redis).
+
+1. Create free accounts: [Vercel](https://vercel.com), [Render](https://render.com), [Neon](https://neon.tech), [Upstash](https://upstash.com).
+2. **Database**: create a Neon project, copy its connection string into `DATABASE_URL`.
+3. **Redis**: create an Upstash Redis database, copy its `rediss://` TLS URL into `REDIS_URL`.
+4. **Backend**: in Render, "New → Blueprint" pointed at this repo — it reads `render.yaml` and provisions the `invitecraft-backend` web service automatically. Fill in the secret env vars it prompts for (`DATABASE_URL`, `REDIS_URL`, Razorpay keys). See `backend/.env.production.example` for the full reference. Add the custom domain `api.invitescraft.live` once deployed.
+5. **Frontend**: in Vercel, import this repo with **Root Directory** set to `frontend`, and set `NEXT_PUBLIC_BACKEND_URL=https://api.invitescraft.live/api`. Add the custom domain `invitescraft.live` (+ `www`).
+6. **DNS**: at your domain registrar, add the records Vercel gives you for `invitescraft.live`/`www`, and a `CNAME` for `api` pointing at the target Render gives you.
+7. Verify `https://api.invitescraft.live/health` returns `{"status":"ok"}`, then load `https://invitescraft.live`.
+
+**Known free-tier tradeoffs:**
+- Render's free web service sleeps after ~15 min idle; the first request afterward takes ~30–50s to wake up.
+- OTP login is currently mocked (dev bypass `123456`) — wire up real SMS/email delivery before a public launch.
+- Razorpay ships in test mode; switch to live keys only once KYC-verified with Razorpay.
