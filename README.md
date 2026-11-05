@@ -97,6 +97,12 @@ For convenient dashboard preview creation and payment authorization matching, yo
 
 Stack: **Vercel** (frontend) + **Render** (backend, via `render.yaml`) + **Neon** (Postgres) + **Upstash** (Redis).
 
+The frontend bundles its fonts through `next/font/local`, avoiding Google Fonts
+network requests and font URL parsing during builds. Font files in
+`frontend/src/assets/fonts/` come from the Google Fonts repository and include
+their SIL Open Font License notices. Keep Vercel's build command set to
+`npm run build`; no font-related environment variables or extra packages are needed.
+
 1. Create free accounts: [Vercel](https://vercel.com), [Render](https://render.com), [Neon](https://neon.tech), [Upstash](https://upstash.com).
 2. **Database**: create a Neon project, copy its connection string into `DATABASE_URL`.
 3. **Redis**: create an Upstash Redis database, copy its `rediss://` TLS URL into `REDIS_URL`.
