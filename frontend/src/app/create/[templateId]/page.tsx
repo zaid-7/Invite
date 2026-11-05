@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useEffect, useState, use } from 'react';
+import React, { useEffect, useRef, useState, use } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { api } from '@/lib/api';
+import { musicTracks } from '@/lib/music';
 import { getTemplateById } from '@/templates/manifest';
 import { Template } from '@/types/template';
 import { Navbar } from '@/components/layout/Navbar';
@@ -37,6 +38,8 @@ export default function BuilderPage({ params }: { params: Promise<{ templateId: 
   const [welcomeQuote, setWelcomeQuote] = useState('');
   const [events, setEvents] = useState<{ id: number; name: string; date: string; time: string; venue: string; address: string }[]>([]);
   const [musicUrl, setMusicUrl] = useState('');
+  const musicPreviewRef = useRef<HTMLAudioElement>(null);
+  const [musicPreviewError, setMusicPreviewError] = useState('');
 
   // Auth gate modal triggers
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -83,7 +86,7 @@ export default function BuilderPage({ params }: { params: Promise<{ templateId: 
           setAccommodationDetails(fields.find((f: { name: string; defaultValue?: string }) => f.name === 'accommodationDetails')?.defaultValue || '');
           setWelcomeQuote(welcome);
           setEvents(defaultEvents.map((ev: any, i: number) => ({ id: i, ...ev })));
-          setMusicUrl(music);
+          setMusicUrl(musicTracks.some(track => track.value === music) ? music : '');
         } else {
           setErrorText('Template scheme could not be decoded.');
         }
@@ -95,6 +98,18 @@ export default function BuilderPage({ params }: { params: Promise<{ templateId: 
     }
     loadTemplate();
   }, [templateId]);
+
+  useEffect(() => {
+    const audio = musicPreviewRef.current;
+    return () => {
+      audio?.pause();
+    };
+  }, [step, musicUrl]);
+
+  const selectMusic = (url: string) => {
+    setMusicUrl(url);
+    setMusicPreviewError('');
+  };
 
   const addEvent = () => {
     setEvents([
@@ -551,9 +566,9 @@ export default function BuilderPage({ params }: { params: Promise<{ templateId: 
                 <Music size={18} className="text-primary" /> Background Soundtrack
               </h2>
               <div>
-                <label className={labelCls}>Select Invitation Audio Track</label>
+                <p className={labelCls}>Select Invitation Audio Track</p>
                 <div className="flex flex-col gap-3 max-w-md">
-                  {template.schemaJson.fields.find((f: any) => f.name === 'musicUrl')?.options?.map((opt: any) => (
+                  {musicTracks.map(opt => (
                     <label
                       key={opt.value}
                       className={`flex items-center justify-between border p-4 cursor-pointer transition-all ${
@@ -568,7 +583,7 @@ export default function BuilderPage({ params }: { params: Promise<{ templateId: 
                           type="radio"
                           name="music"
                           checked={musicUrl === opt.value}
-                          onChange={() => setMusicUrl(opt.value)}
+                          onChange={() => selectMusic(opt.value)}
                           className="accent-primary"
                         />
                         <span className="text-sm font-medium text-ink">{opt.label}</span>
@@ -589,13 +604,36 @@ export default function BuilderPage({ params }: { params: Promise<{ templateId: 
                         type="radio"
                         name="music"
                         checked={musicUrl === ''}
-                        onChange={() => setMusicUrl('')}
+                        onChange={() => selectMusic('')}
                         className="accent-primary"
                       />
                       <span className="text-sm font-medium text-ink">No Audio (Silent)</span>
                     </div>
                   </label>
                 </div>
+                {musicUrl && (
+                  <div className="mt-5 max-w-md">
+                    <p className="text-sm font-medium text-ink mb-2">Listen before choosing</p>
+                    <audio
+                      key={musicUrl}
+                      ref={musicPreviewRef}
+                      controls
+                      preload="none"
+                      src={musicUrl}
+                      aria-label="Preview selected background music"
+                      className="w-full"
+                      onError={event => {
+                        console.error('Unable to preview background music', musicUrl, event.currentTarget.error);
+                        setMusicPreviewError('Unable to preview this track. Please try again or choose another track.');
+                      }}
+                    />
+                    {musicPreviewError && <p role="alert" className="mt-2 text-sm text-red-700">{musicPreviewError}</p>}
+                  </div>
+                )}
+                <p className="mt-4 text-xs text-muted max-w-md">
+                  The selected track loops in the invitation. If the browser blocks autoplay,
+                  music starts on the guest&apos;s first interaction. Guests can mute or unmute it anytime.
+                </p>
               </div>
             </div>
           )}
@@ -626,7 +664,7 @@ export default function BuilderPage({ params }: { params: Promise<{ templateId: 
                   </div>
                   <div>
                     <span className="text-xs text-muted block font-medium mb-0.5">Selected Audio</span>
-                    <strong>{musicUrl ? 'Custom Background Music Enabled' : 'Silent Card (No music)'}</strong>
+                    <strong>{musicTracks.find(track => track.value === musicUrl)?.label || 'Silent Card (No music)'}</strong>
                   </div>
                   {supportsProfiles && (
                     <>

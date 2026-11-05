@@ -1,6 +1,6 @@
 'use client';
 
-import type { InvitationData } from './types';
+import { parseEventTime } from '../lib/event-time';
 import { getTemplateById } from './manifest';
 
 interface InvitationRendererProps {
@@ -19,6 +19,7 @@ export function InvitationRenderer({ data, mode, slug }: InvitationRendererProps
   if (isModular && data) {
     const firstEvent = data.events && data.events[0];
     const eventDate = firstEvent ? firstEvent.date : new Date().toISOString().split('T')[0];
+    const eventTime = typeof firstEvent?.time === 'string' ? parseEventTime(firstEvent.time) : null;
 
     normalizedData = {
       id: data.id || 'temp-id',
@@ -27,7 +28,7 @@ export function InvitationRenderer({ data, mode, slug }: InvitationRendererProps
         partnerOne: data.groomName || 'Partner One',
         partnerTwo: data.brideName || 'Partner Two',
       },
-      weddingDateTimeISO: eventDate ? `${eventDate}T17:00:00` : new Date().toISOString(),
+      weddingDateTimeISO: eventDate ? `${eventDate}T${eventTime ?? '00:00'}:00` : new Date().toISOString(),
       tagline: data.welcomeQuote || 'Together with their families...',
       partnerOneParents: data.groomParents,
       partnerTwoParents: data.brideParents,
@@ -40,7 +41,7 @@ export function InvitationRenderer({ data, mode, slug }: InvitationRendererProps
         label: ev.name,
         venueName: ev.venue,
         address: ev.address,
-        time: ev.time || '05:00 PM onwards',
+        time: ev.time || '',
         mapUrl: 'https://maps.google.com',
       })),
       dressCode: 'Formal Traditional / Smart Elegant',
@@ -56,7 +57,7 @@ export function InvitationRenderer({ data, mode, slug }: InvitationRendererProps
       musicTrackUrl: data.musicUrl || '',
       sections: {
         scratchReveal: true,
-        countdown: true,
+        countdown: Boolean(eventDate && eventTime),
         gallery: true,
         rsvp: data.includeRsvp ?? true,
         accommodation: data.includeAccommodation ?? false,

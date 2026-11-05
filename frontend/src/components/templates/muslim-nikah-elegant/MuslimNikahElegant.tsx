@@ -1,11 +1,12 @@
 'use client';
 
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Play, Square, MapPin, Calendar, Users, Star } from 'lucide-react';
+import { Play, MapPin, Calendar, Users, Star } from 'lucide-react';
 import { WatermarkOverlay } from '@/components/ui/WatermarkOverlay';
 import { ScratchReveal } from '../../../templates/shared/features/ScratchReveal';
 import { AccommodationSection } from '../../../templates/shared/features/AccommodationSection';
+import { MusicPlayer } from '../../../templates/shared/features/MusicPlayer';
 
 interface MuslimNikahElegantProps {
   data: {
@@ -33,11 +34,9 @@ export default function MuslimNikahElegant({ data, mode, slug }: MuslimNikahEleg
     brideParents = 'Mr. & Mrs. Shakeel Khan',
     welcomeQuote = 'In the name of Allah, the Most Gracious, the Most Merciful. We request the pleasure of your company.',
     events = [],
-    musicUrl = '/music/sufi-flute.mp3',
+    musicUrl = '',
   } = data;
 
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   // RSVP Form state for live page
@@ -50,27 +49,7 @@ export default function MuslimNikahElegant({ data, mode, slug }: MuslimNikahEleg
 
   useEffect(() => {
     setMounted(true);
-    return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-      }
-    };
   }, []);
-
-  const toggleMusic = () => {
-    if (!audioRef.current) {
-      audioRef.current = new Audio(musicUrl);
-      audioRef.current.loop = true;
-    }
-
-    if (isPlaying) {
-      audioRef.current.pause();
-      setIsPlaying(false);
-    } else {
-      audioRef.current.play().catch(err => console.log('Audio autoplay blocked by browser sandbox:', err));
-      setIsPlaying(true);
-    }
-  };
 
   const handleRsvpSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -116,15 +95,7 @@ export default function MuslimNikahElegant({ data, mode, slug }: MuslimNikahEleg
 
       {mode === 'preview' && <WatermarkOverlay />}
 
-      {/* Floating Music Button */}
-      {musicUrl && (
-        <button
-          onClick={toggleMusic}
-          className="fixed bottom-6 right-6 z-40 bg-gold-warm p-4 rounded-full text-midnight-blue shadow-2xl hover:scale-110 active:scale-95 transition-all outline-none"
-        >
-          {isPlaying ? <Square size={20} fill="#1B2838" /> : <Play size={20} fill="#1B2838" />}
-        </button>
-      )}
+      <MusicPlayer trackUrl={musicUrl} />
 
       {/* Main card view */}
       <div className="relative w-full max-w-xl border-2 border-gold-warm/30 bg-emerald-muted/80 backdrop-blur-md py-12 px-6 md:px-10 rounded-xl shadow-2xl z-10 flex flex-col items-center">

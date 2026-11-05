@@ -3,6 +3,7 @@
 import React, { useEffect, useState, use } from 'react';
 import Link from 'next/link';
 import { api } from '@/lib/api';
+import { musicTracks } from '@/lib/music';
 import { Template } from '@/types/template';
 import { TemplateRenderer } from '@/components/templates/TemplateRenderer';
 import { getTemplateById } from '@/templates/manifest';
@@ -20,7 +21,7 @@ const defaultDemoData: Record<string, any> = {
       { name: 'Wedding (Muhurtham)', date: '2026-11-21', time: '09:30 AM', venue: 'Shubh Laxmi Mandapam', address: 'Avinashi Road, Coimbatore' },
       { name: 'Reception', date: '2026-11-21', time: '07:00 PM', venue: 'Grand Palace Hall', address: 'Trichy Road, Coimbatore' }
     ],
-    musicUrl: '/music/shehnai.mp3'
+    musicUrl: musicTracks[0].value
   },
   'muslim-nikah-elegant': {
     groomName: 'Zain',
@@ -32,7 +33,7 @@ const defaultDemoData: Record<string, any> = {
       { name: 'Nikah (Marriage Ceremony)', date: '2026-12-15', time: '04:00 PM', venue: 'Royal Crescent Banquet', address: 'Old City, Hyderabad' },
       { name: 'Walima (Reception)', date: '2026-12-16', time: '07:30 PM', venue: 'Taj Falaknuma Palace', address: 'Engine Bowli, Hyderabad' }
     ],
-    musicUrl: '/music/sufi-flute.mp3'
+    musicUrl: musicTracks[1].value
   },
   'default': {
     groomName: 'Ranveer',
@@ -45,7 +46,7 @@ const defaultDemoData: Record<string, any> = {
       { name: 'Wedding Ceremony', date: '2026-11-14', time: '05:00 PM', venue: 'Villa del Balbianello', address: 'Lake Como, Italy' },
       { name: 'Grand Reception', date: '2026-11-21', time: '07:30 PM', venue: 'Grand Hyatt Mumbai', address: 'Santacruz East, Mumbai' }
     ],
-    musicUrl: '/music/shehnai.mp3'
+    musicUrl: musicTracks[0].value
   }
 };
 
@@ -87,7 +88,7 @@ export default function DemoPage({ params }: { params: Promise<{ templateId: str
             brideParents: bParents || fallback.brideParents,
             welcomeQuote: welcome || fallback.welcomeQuote,
             events: defaultEvents || fallback.events,
-            musicUrl: music || fallback.musicUrl,
+            musicUrl: musicTracks.some(track => track.value === music) ? music : fallback.musicUrl,
           });
         } else {
           // Fallback to manifest lookup

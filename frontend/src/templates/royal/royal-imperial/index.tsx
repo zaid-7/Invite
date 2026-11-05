@@ -46,11 +46,6 @@ export default function RoyalImperialTemplate({ data, mode, slug }: TemplateProp
     }
     setStarted(true);
 
-    // Play music if configured and loaded
-    const musicBtn = document.querySelector('[data-music-play-btn="true"]') as HTMLButtonElement | null;
-    if (musicBtn) {
-      musicBtn.click();
-    }
   };
 
   // Gallery slideshow state & auto-play rotation
@@ -565,7 +560,7 @@ export default function RoyalImperialTemplate({ data, mode, slug }: TemplateProp
                   marginTop: '0.2rem',
                 }}
               >
-                10:30 AM
+                {data.events[0]?.time}
               </span>
             </ScratchReveal>
           </div>

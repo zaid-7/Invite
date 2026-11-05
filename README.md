@@ -27,6 +27,33 @@ designs with couple profiles offer optional qualification and profession fields;
 leave them blank to hide those lines. Parent names also come from the form rather
 than hardcoded template text. These options apply to previews and published links.
 
+The date-reveal card uses the first event's date and entered time, and countdowns
+target that same time rather than a fixed hour. Clock times such as `6:00 PM`,
+`18:00`, and `05:00 PM onwards` are supported. Descriptive or missing times are
+not replaced with sample times; countdowns are hidden when no precise clock time
+can be determined.
+
+---
+
+## Invitation background music
+
+The builder's **Music** step offers three bundled MP3 tracks, a selected-track
+audio preview, and **No Audio (Silent)**. The selected URL is saved with the
+invitation and used in both previews and published links across all templates.
+New invitations default to silent unless the template specifies a bundled track.
+
+Guest playback loops and starts automatically when the browser permits audible
+autoplay. Otherwise, the first click or Enter/Space interaction starts it,
+including opening a template's doors or curtain. The floating music button
+plays, mutes, or unmutes the track; muting does not reset playback. Music stops
+when leaving the invitation. Playback errors are shown beside the control.
+
+MP3 assets are served from `frontend/public/music/` so they deploy with the
+frontend. Add future tracks there and register their labels and `/music/...`
+URLs in `frontend/src/lib/music.ts`; database reseeding is not necessary.
+Only deploy tracks you have permission to distribute, preserving any required
+attribution or accompanying license notices.
+
 ---
 
 ## Workspace Architecture

@@ -1,11 +1,12 @@
 'use client';
 
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Play, Square, MapPin, Calendar, Users, Music } from 'lucide-react';
+import { Play, MapPin, Calendar, Users } from 'lucide-react';
 import { WatermarkOverlay } from '@/components/ui/WatermarkOverlay';
 import { ScratchReveal } from '../../../templates/shared/features/ScratchReveal';
 import { AccommodationSection } from '../../../templates/shared/features/AccommodationSection';
+import { MusicPlayer } from '../../../templates/shared/features/MusicPlayer';
 
 interface HinduRoyalWeddingProps {
   data: {
@@ -33,11 +34,9 @@ export default function HinduRoyalWedding({ data, mode, slug }: HinduRoyalWeddin
     brideParents = 'Mr. & Mrs. Patel',
     welcomeQuote = 'Seeking the blessings of Lord Ganesha, we invite you to join us in celebrating our wedding.',
     events = [],
-    musicUrl = '/music/shehnai.mp3',
+    musicUrl = '',
   } = data;
 
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   // RSVP Form state for live page
@@ -50,27 +49,7 @@ export default function HinduRoyalWedding({ data, mode, slug }: HinduRoyalWeddin
 
   useEffect(() => {
     setMounted(true);
-    return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-      }
-    };
   }, []);
-
-  const toggleMusic = () => {
-    if (!audioRef.current) {
-      audioRef.current = new Audio(musicUrl);
-      audioRef.current.loop = true;
-    }
-
-    if (isPlaying) {
-      audioRef.current.pause();
-      setIsPlaying(false);
-    } else {
-      audioRef.current.play().catch(err => console.log('Audio autoplay blocked by browser sandbox:', err));
-      setIsPlaying(true);
-    }
-  };
 
   const handleRsvpSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -116,15 +95,7 @@ export default function HinduRoyalWedding({ data, mode, slug }: HinduRoyalWeddin
 
       {mode === 'preview' && <WatermarkOverlay />}
 
-      {/* Floating Music Button */}
-      {musicUrl && (
-        <button
-          onClick={toggleMusic}
-          className="fixed bottom-6 right-6 z-40 bg-gold-warm p-4 rounded-full text-maroon-deep shadow-2xl hover:scale-110 active:scale-95 transition-all outline-none"
-        >
-          {isPlaying ? <Square size={20} fill="#5B1A1A" /> : <Play size={20} fill="#5B1A1A" />}
-        </button>
-      )}
+      <MusicPlayer trackUrl={musicUrl} />
 
       {/* Main card view */}
       <div className="relative w-full max-w-xl border-[4px] border-gold-warm/40 bg-maroon-deep/90 py-12 px-6 md:px-10 rounded-lg shadow-2xl z-10 flex flex-col items-center">
