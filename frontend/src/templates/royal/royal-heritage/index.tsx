@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import type { InvitationData } from '../../types';
-import { RSVPForm } from '../../shared/features/RSVPForm';
+import { PartnerDetails } from '../../shared/features/PartnerDetails';
+import { AccommodationSection } from '../../shared/features/AccommodationSection';
 import { MusicPlayer } from '../../shared/features/MusicPlayer';
 import { ScratchReveal } from '../../shared/features/ScratchReveal';
 
@@ -366,20 +367,7 @@ export default function RoyalHeritageTemplate({ data, mode, slug }: TemplateProp
             {partnerOne}
           </h1>
 
-          <div
-            style={{
-              fontFamily: 'var(--font-serif)',
-              fontStyle: 'italic',
-              fontSize: '0.85rem',
-              color: '#F5F3ED',
-              lineHeight: 1.4,
-              marginBottom: '0.6rem',
-            }}
-          >
-            <div>Son of Mr. &amp; Mrs. Rajendra Sharma</div>
-            <div style={{ fontSize: '0.75rem', opacity: 0.88 }}>M.Tech, IIT Bombay</div>
-            <div style={{ fontSize: '0.75rem', opacity: 0.88 }}>Senior Software Engineer</div>
-          </div>
+          <PartnerDetails parents={data.partnerOneParents} qualification={data.partnerOneQualification} profession={data.partnerOneProfession} relationship="Son of" />
 
           {/* Ampersand */}
           <div
@@ -408,20 +396,7 @@ export default function RoyalHeritageTemplate({ data, mode, slug }: TemplateProp
             {partnerTwo}
           </h1>
 
-          <div
-            style={{
-              fontFamily: 'var(--font-serif)',
-              fontStyle: 'italic',
-              fontSize: '0.85rem',
-              color: '#F5F3ED',
-              lineHeight: 1.4,
-              marginBottom: '1rem',
-            }}
-          >
-            <div>Daughter of Mr. &amp; Mrs. Nasser Ahmed</div>
-            <div style={{ fontSize: '0.75rem', opacity: 0.88 }}>MBBS, M.D</div>
-            <div style={{ fontSize: '0.75rem', opacity: 0.88 }}>Pediatrician</div>
-          </div>
+          <PartnerDetails parents={data.partnerTwoParents} qualification={data.partnerTwoQualification} profession={data.partnerTwoProfession} relationship="Daughter of" />
         </div>
 
         {/* SCROLL Indicator at bottom of first fold */}
@@ -991,53 +966,7 @@ export default function RoyalHeritageTemplate({ data, mode, slug }: TemplateProp
         </div>
       </section>
 
-      {/* SECTION 8 — Accommodation Section */}
-      <section
-        id="accommodation-section"
-        style={{
-          background: lightBgColor, // Light Background
-          padding: '4.5rem 1.5rem 1.5rem',
-          textAlign: 'center',
-          boxSizing: 'border-box',
-        }}
-      >
-        <div style={{ maxWidth: '640px', margin: '0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          {/* Hotel building icon */}
-          <div style={{ marginBottom: '0.4rem', opacity: 0.9 }}>
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke={navyTextColor} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="3" y="3" width="18" height="18" rx="2" />
-              <path d="M9 3v18M15 3v18M3 9h18M3 15h18" />
-            </svg>
-          </div>
-          <h2
-            style={{
-              fontFamily: 'var(--font-script)',
-              fontSize: 'clamp(2.5rem, 6.5vw, 3.5rem)',
-              color: navyTextColor,
-              margin: '0.2rem 0',
-              fontWeight: 'normal',
-              fontStyle: 'italic',
-            }}
-          >
-            Accommodation
-          </h2>
-          <SectionDivider color={navyTextColor} />
-          <p
-            style={{
-              fontFamily: 'var(--font-sans)',
-              fontSize: '0.92rem',
-              color: '#5A6072',
-              margin: '1.2rem 0 0',
-              lineHeight: 1.6,
-              maxWidth: '460px',
-              fontWeight: 500,
-            }}
-          >
-            Special rates at The Grand Palace Hotel (5 min from venue).<br />
-            Use code WEDDING2026 when booking.
-          </p>
-        </div>
-      </section>
+      <AccommodationSection enabled={data.sections.accommodation} details={data.accommodationDetails} background={lightBgColor} color={navyTextColor} />
 
       {/* SECTION 9 — Gifts Section */}
       <section

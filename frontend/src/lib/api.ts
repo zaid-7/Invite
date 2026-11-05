@@ -97,6 +97,14 @@ export const api = {
     return res.json();
   },
 
+  async unlockPreview(token: string) {
+    const res = await fetch(`${BASE_URL}/previews/${encodeURIComponent(token)}/unlock`, {
+      method: 'POST',
+      headers: getHeaders(),
+    });
+    return res.json();
+  },
+
   // Payments
   async createOrder(previewId: string) {
     const res = await fetch(`${BASE_URL}/payments/create-order`, {

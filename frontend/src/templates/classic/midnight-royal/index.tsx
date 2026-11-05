@@ -8,6 +8,7 @@ import { DoorReveal3D } from '../../shared/features/DoorReveal3D';
 import { EventDetails } from '../../shared/features/MapEmbed';
 import { PhotoSlideshow } from '../../shared/features/PhotoSlideshow';
 import { RSVPForm } from '../../shared/features/RSVPForm';
+import { AccommodationSection } from '../../shared/features/AccommodationSection';
 import { MusicPlayer } from '../../shared/features/MusicPlayer';
 
 interface TemplateProps {
@@ -128,6 +129,8 @@ export default function MidnightRoyalTemplate({ data, mode, slug }: TemplateProp
           <PhotoSlideshow images={data.gallery} />
         </section>
       )}
+
+      <AccommodationSection enabled={data.sections.accommodation} details={data.accommodationDetails} />
 
       {data.sections.rsvp && (
         <section style={{ padding: '2rem 1.5rem 6rem', maxWidth: 720, margin: '0 auto' }}>

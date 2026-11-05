@@ -4,6 +4,31 @@ InviteCraft ([invitescraft.live](https://invitescraft.live)) is a premium, desig
 
 ---
 
+## Direct invitation unlock
+
+On this branch, **Unlock Permanently** publishes the preview directly at `/i/[slug]`,
+without opening Razorpay or the mock checkout. Login is still required, and only
+the preview's owner can unlock it. The backend saves the invitation and a
+zero-amount fulfilled order atomically; repeated clicks return the same URL.
+Existing hosting durations remain unchanged (Basic: 6 months, Premium: 12 months,
+Deluxe: no expiry). Publishing requires PostgreSQL; in-memory demo previews cannot
+be published. The payment API remains available, but the preview screen no longer
+calls it.
+
+The builder asks for OTP verification again when a login token expires, preserving
+the invitation fields. Keep `JWT_SECRET` stable in your ignored `backend/.env`
+across local restarts so existing logins remain valid; do not generate a new
+signing key on each launch. Use a strong private signing key for production.
+
+In the builder's **Events** step, RSVP can be disabled and accommodation can be
+enabled with custom booking details. Accommodation is hidden by default and
+requires non-empty details when enabled. In the **Names** step, the four Royal
+designs with couple profiles offer optional qualification and profession fields;
+leave them blank to hide those lines. Parent names also come from the form rather
+than hardcoded template text. These options apply to previews and published links.
+
+---
+
 ## Workspace Architecture
 
 ```

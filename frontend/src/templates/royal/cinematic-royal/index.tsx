@@ -7,6 +7,7 @@ import { VideoBackground } from '../../shared/features/VideoBackground';
 import { EventDetails } from '../../shared/features/MapEmbed';
 import { PhotoSlideshow } from '../../shared/features/PhotoSlideshow';
 import { RSVPForm } from '../../shared/features/RSVPForm';
+import { AccommodationSection } from '../../shared/features/AccommodationSection';
 import { MusicPlayer } from '../../shared/features/MusicPlayer';
 import { ScratchReveal } from '../../shared/features/ScratchReveal';
 
@@ -60,6 +61,8 @@ export default function CinematicRoyalTemplate({ data, mode, slug }: TemplatePro
           <PhotoSlideshow images={data.gallery} />
         </section>
       )}
+
+      <AccommodationSection enabled={data.sections.accommodation} details={data.accommodationDetails} />
 
       {data.sections.rsvp && (
         <section style={{ padding: '3rem 1.5rem 6rem', maxWidth: 720, margin: '0 auto' }}>

@@ -13,7 +13,7 @@ export const authMiddleware = (
   try {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      res.status(401).json({ status: 'error', message: 'Access denied. No token provided.' });
+      res.status(401).json({ status: 'error', code: 'AUTH_REQUIRED', message: 'Access denied. No token provided.' });
       return;
     }
 
@@ -22,6 +22,6 @@ export const authMiddleware = (
     req.user = decoded;
     next();
   } catch (error) {
-    res.status(401).json({ status: 'error', message: 'Invalid or expired token.' });
+    res.status(401).json({ status: 'error', code: 'INVALID_TOKEN', message: 'Invalid or expired token.' });
   }
 };

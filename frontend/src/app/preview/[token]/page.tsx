@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { api } from '@/lib/api';
 import { Preview } from '@/types/template';
 import { TemplateRenderer } from '@/components/templates/TemplateRenderer';
-import { Eye, ShieldAlert, CreditCard, Sparkles, Receipt } from 'lucide-react';
+import { Eye, ShieldAlert, Link as LinkIcon } from 'lucide-react';
 
 export default function PreviewPage({ params }: { params: Promise<{ token: string }> }) {
   const router = useRouter();
@@ -21,10 +21,7 @@ export default function PreviewPage({ params }: { params: Promise<{ token: strin
   const [viewCount, setViewCount] = useState(0);
   const [maxViews, setMaxViews] = useState(1);
 
-  // Payment triggers
-  const [paymentLoading, setPaymentLoading] = useState(false);
-  const [showMockModal, setShowMockModal] = useState(false);
-  const [targetOrder, setTargetOrder] = useState<any>(null);
+  const [unlockLoading, setUnlockLoading] = useState(false);
 
   useEffect(() => {
     async function loadPreview() {
@@ -76,86 +73,21 @@ export default function PreviewPage({ params }: { params: Promise<{ token: strin
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const handleCheckoutTrigger = async () => {
-    if (!preview) return;
-    setPaymentLoading(true);
+  const handleUnlock = async () => {
+    if (!preview || unlockLoading) return;
+    setUnlockLoading(true);
 
     try {
-      const res = await api.createOrder(preview.id);
-      if (res.status === 'success') {
-        const { isMock, order, razorpayKeyId } = res;
-        setTargetOrder(order);
-
-        if (isMock) {
-          setShowMockModal(true);
-        } else {
-          // Load Razorpay JS SDK
-          const script = document.createElement('script');
-          script.src = 'https://checkout.razorpay.com/v1/checkout.js';
-          script.async = true;
-          script.onload = () => {
-            const options = {
-              key: razorpayKeyId,
-              amount: order.amount,
-              currency: order.currency,
-              name: 'InviteCraft',
-              description: 'Vanity Digital Invitation Unlock',
-              order_id: order.gatewayRef,
-              handler: async function (response: any) {
-                setPaymentLoading(true);
-                try {
-                  const verifyRes = await api.verifyPayment(
-                    order.id,
-                    response.razorpay_payment_id,
-                    response.razorpay_signature
-                  );
-                  if (verifyRes.status === 'success') {
-                    router.push(`/i/${verifyRes.slug}`);
-                  } else {
-                    alert(verifyRes.message || 'Payment authentication failed.');
-                  }
-                } catch (err) {
-                  alert('Error verifying signature.');
-                } finally {
-                  setPaymentLoading(false);
-                }
-              },
-              theme: { color: '#5B1A1A' },
-            };
-
-            const rzp = new (window as any).Razorpay(options);
-            rzp.open();
-          };
-          document.body.appendChild(script);
-        }
-      } else {
-        alert(res.message || 'Failed to initialize order.');
-      }
-    } catch (err) {
-      alert('Network error connecting checkout page.');
-    } finally {
-      setPaymentLoading(false);
-    }
-  };
-
-  const handleSimulatePayment = async () => {
-    if (!targetOrder) return;
-    setPaymentLoading(true);
-    setShowMockModal(false);
-
-    try {
-      const mockPayId = `pay_mock_${Math.random().toString(36).substr(2, 9)}`;
-      const res = await api.verifyPayment(targetOrder.id, mockPayId);
-      
-      if (res.status === 'success') {
+      const res = await api.unlockPreview(token);
+      if (res.status === 'success' && typeof res.slug === 'string' && res.slug) {
         router.push(`/i/${res.slug}`);
       } else {
-        alert(res.message || 'Simulated payment processing error.');
+        alert(res.message || 'Unable to unlock your invitation.');
       }
-    } catch (err) {
-      alert('Error verifying payment.');
+    } catch {
+      alert('Network error unlocking your invitation. Please try again.');
     } finally {
-      setPaymentLoading(false);
+      setUnlockLoading(false);
     }
   };
 
@@ -172,7 +104,7 @@ export default function PreviewPage({ params }: { params: Promise<{ token: strin
   if (errorPayload || !preview) {
     return (
       <div className="min-h-screen flex flex-col bg-maroon-deep text-ivory items-center justify-center p-6 relative">
-        {/* Blurred background preview mockup to entice payment */}
+        {/* Blurred background preview mockup */}
         <div className="absolute inset-0 opacity-15 overflow-hidden filter blur-md select-none pointer-events-none flex items-center justify-center">
           <div className="w-[300px] h-[300px] border border-gold-warm rounded-full animate-spin-slow" />
         </div>
@@ -214,7 +146,7 @@ export default function PreviewPage({ params }: { params: Promise<{ token: strin
         mode="preview"
       />
 
-      {/* Sticky Bottom Actions Checkout Banner */}
+      {/* Sticky Bottom Unlock Banner */}
       <div className="fixed bottom-0 left-0 right-0 z-40 bg-maroon-deep text-ivory border-t-2 border-gold-warm/30 shadow-2xl py-4 px-6 select-none font-sans">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-6 text-xs md:text-sm">
@@ -232,70 +164,20 @@ export default function PreviewPage({ params }: { params: Promise<{ token: strin
           <div className="flex items-center gap-4 w-full md:w-auto">
             <div className="text-right hidden md:block select-none">
               <span className="text-[10px] uppercase block tracking-wider text-ivory/60">Selected: {preview.template.name}</span>
-              <strong className="text-gold-warm text-sm">Permanent shares unlocked</strong>
+              <strong className="text-gold-warm text-sm">Publish your shareable invitation</strong>
             </div>
 
             <button
-              onClick={handleCheckoutTrigger}
-              disabled={paymentLoading}
+              onClick={handleUnlock}
+              disabled={unlockLoading}
               className="flex-1 md:flex-initial bg-gold-warm text-maroon-deep font-sans font-bold hover:scale-103 active:scale-97 transition-transform py-3 px-6 rounded-lg flex items-center justify-center gap-2 cursor-pointer shadow-lg disabled:opacity-50 text-xs uppercase tracking-wider"
             >
-              {paymentLoading ? 'Redirecting...' : `Unlock Permanently • ₹${preview.template.price / 100}`}
-              <CreditCard size={15} />
+              {unlockLoading ? 'Creating Your Link...' : 'Unlock Permanently'}
+              <LinkIcon size={15} />
             </button>
           </div>
         </div>
       </div>
-
-      {/* Simulated Checkout Sandbox Modal (Overlay) */}
-      {showMockModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm select-none">
-          <div className="w-full max-w-sm bg-maroon-deep text-ivory border border-gold-warm/35 rounded-xl p-8 relative shadow-2xl">
-            <div className="flex flex-col items-center mb-6">
-              <div className="w-12 h-12 rounded-full border border-gold-warm/35 flex items-center justify-center text-gold-warm bg-maroon-deep mb-3 animate-pulse">
-                <Receipt size={22} />
-              </div>
-              <h3 className="text-serif text-lg font-bold text-gold-warm">RAZORPAY TEST GATEWAY</h3>
-              <p className="text-[10px] text-gold-warm/60 uppercase font-semibold tracking-wider text-center mt-1">
-                Order Sandbox Simulator
-              </p>
-            </div>
-
-            <div className="p-4 bg-maroon-deep/50 border border-gold-warm/20 rounded-lg text-xs leading-relaxed flex flex-col gap-2.5 mb-6 text-gold-warm/95">
-              <div className="flex justify-between border-b border-gold-warm/15 pb-1">
-                <span>Receipt Object</span>
-                <strong className="font-mono text-[10px] text-ivory">{targetOrder?.id.substring(0, 14)}...</strong>
-              </div>
-              <div className="flex justify-between border-b border-gold-warm/15 pb-1">
-                <span>Pay Amount</span>
-                <strong className="text-gold-warm">₹{targetOrder?.amount / 100} INR</strong>
-              </div>
-              <div className="flex justify-between">
-                <span>Sandbox Currency</span>
-                <span className="font-mono text-ivory">INR</span>
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <button
-                onClick={handleSimulatePayment}
-                disabled={paymentLoading}
-                className="w-full bg-gold-warm text-maroon-deep font-sans font-bold hover:scale-102 active:scale-98 transition-transform py-3 rounded-lg flex items-center justify-center gap-2 cursor-pointer shadow-lg font-bold uppercase tracking-wider text-xs"
-              >
-                {paymentLoading ? 'Confirming...' : 'Authorize Fake payment'}
-                <Sparkles size={14} />
-              </button>
-              
-              <button
-                onClick={() => setShowMockModal(false)}
-                className="text-center text-[10px] uppercase font-bold text-gold-warm/60 hover:text-gold-warm py-2 transition-colors cursor-pointer"
-              >
-                Cancel Sandbox Checkout
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

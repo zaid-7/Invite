@@ -22,6 +22,7 @@ export interface InvitationSections {
   rsvp: boolean;
   map: boolean;
   musicPlayer: boolean;
+  accommodation?: boolean;
 }
 
 export interface InvitationData {
@@ -35,6 +36,13 @@ export interface InvitationData {
 
   weddingDateTimeISO: string;       // "2027-02-14T17:00:00"
   tagline?: string;                 // "Together with their families..."
+  partnerOneParents?: string;
+  partnerTwoParents?: string;
+  partnerOneQualification?: string;
+  partnerTwoQualification?: string;
+  partnerOneProfession?: string;
+  partnerTwoProfession?: string;
+  accommodationDetails?: string;
 
   events: VenueDetail[];
   dressCode?: string;

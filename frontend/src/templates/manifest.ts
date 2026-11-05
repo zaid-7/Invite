@@ -93,7 +93,7 @@ export const templateManifest: TemplateManifestEntry[] = [
     name: 'Royal Imperial',
     tier: 'royal',
     thumbnail: '/templates/thumbnails/royal-imperial.jpg',
-    features: ['videoBackground', 'scratchReveal', 'countdown', 'rsvp', 'musicPlayer'],
+    features: ['videoBackground', 'scratchReveal', 'countdown', 'rsvp', 'musicPlayer', 'coupleProfiles'],
     Component: dynamic(() => import('./royal/royal-imperial'), { ssr: false }),
   },
   {
@@ -101,7 +101,7 @@ export const templateManifest: TemplateManifestEntry[] = [
     name: 'Royal Prestige',
     tier: 'royal',
     thumbnail: '/templates/thumbnails/royal-prestige.jpg',
-    features: ['videoBackground', 'scratchReveal', 'countdown', 'rsvp', 'musicPlayer'],
+    features: ['videoBackground', 'scratchReveal', 'countdown', 'rsvp', 'musicPlayer', 'coupleProfiles'],
     Component: dynamic(() => import('./royal/royal-prestige'), { ssr: false }),
   },
   {
@@ -109,7 +109,7 @@ export const templateManifest: TemplateManifestEntry[] = [
     name: 'Royal Heritage',
     tier: 'royal',
     thumbnail: '/templates/thumbnails/royal-heritage.jpg',
-    features: ['videoBackground', 'scratchReveal', 'countdown', 'rsvp', 'musicPlayer'],
+    features: ['videoBackground', 'scratchReveal', 'countdown', 'rsvp', 'musicPlayer', 'coupleProfiles'],
     Component: dynamic(() => import('./royal/royal-heritage'), { ssr: false }),
   },
   {
@@ -117,7 +117,7 @@ export const templateManifest: TemplateManifestEntry[] = [
     name: 'Royal Elegance Royal',
     tier: 'royal',
     thumbnail: '/templates/thumbnails/royal-elegance-royal.jpg',
-    features: ['videoBackground', 'scratchReveal', 'countdown', 'rsvp', 'musicPlayer'],
+    features: ['videoBackground', 'scratchReveal', 'countdown', 'rsvp', 'musicPlayer', 'coupleProfiles'],
     Component: dynamic(() => import('./royal/royal-elegance-royal'), { ssr: false }),
   },
   {

@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { Play, Square, MapPin, Calendar, Users, Star } from 'lucide-react';
 import { WatermarkOverlay } from '@/components/ui/WatermarkOverlay';
 import { ScratchReveal } from '../../../templates/shared/features/ScratchReveal';
+import { AccommodationSection } from '../../../templates/shared/features/AccommodationSection';
 
 interface MuslimNikahElegantProps {
   data: {
@@ -15,6 +16,9 @@ interface MuslimNikahElegantProps {
     welcomeQuote?: string;
     events?: { name: string; date: string; time: string; venue: string; address: string }[];
     musicUrl?: string;
+    includeRsvp?: boolean;
+    includeAccommodation?: boolean;
+    accommodationDetails?: string;
   };
   mode: 'preview' | 'live';
   onRsvpSuccess?: () => void;
@@ -223,7 +227,8 @@ export default function MuslimNikahElegant({ data, mode, slug }: MuslimNikahEleg
         </div>
 
         {/* Guest RSVP Box on live page */}
-        {mode === 'live' && (
+        <AccommodationSection enabled={data.includeAccommodation} details={data.accommodationDetails} />
+        {mode === 'live' && data.includeRsvp !== false && (
           <div className="w-full border-t border-gold-warm/20 mt-12 pt-10">
             <h3 className="text-center text-gold-warm uppercase tracking-widest text-sm mb-6 flex items-center justify-center gap-2">
               <Users size={16} /> RSVP Attendance

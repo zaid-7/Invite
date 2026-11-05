@@ -4,6 +4,7 @@ import React, { useEffect, useState, use } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { api } from '@/lib/api';
+import { getTemplateById } from '@/templates/manifest';
 import { Template } from '@/types/template';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
@@ -26,6 +27,13 @@ export default function BuilderPage({ params }: { params: Promise<{ templateId: 
   const [brideName, setBrideName] = useState('');
   const [groomParents, setGroomParents] = useState('');
   const [brideParents, setBrideParents] = useState('');
+  const [groomQualification, setGroomQualification] = useState('');
+  const [brideQualification, setBrideQualification] = useState('');
+  const [groomProfession, setGroomProfession] = useState('');
+  const [brideProfession, setBrideProfession] = useState('');
+  const [includeRsvp, setIncludeRsvp] = useState(true);
+  const [includeAccommodation, setIncludeAccommodation] = useState(false);
+  const [accommodationDetails, setAccommodationDetails] = useState('');
   const [welcomeQuote, setWelcomeQuote] = useState('');
   const [events, setEvents] = useState<{ id: number; name: string; date: string; time: string; venue: string; address: string }[]>([]);
   const [musicUrl, setMusicUrl] = useState('');
@@ -42,6 +50,7 @@ export default function BuilderPage({ params }: { params: Promise<{ templateId: 
 
   // Submission indicator
   const [submitting, setSubmitting] = useState(false);
+  const supportsProfiles = getTemplateById(template?.rendererRef || '')?.features.includes('coupleProfiles') ?? false;
 
   useEffect(() => {
     async function loadTemplate() {
@@ -65,6 +74,13 @@ export default function BuilderPage({ params }: { params: Promise<{ templateId: 
           setBrideName(bride);
           setGroomParents(gParents);
           setBrideParents(bParents);
+          setGroomQualification(fields.find((f: { name: string; defaultValue?: string }) => f.name === 'groomQualification')?.defaultValue || '');
+          setBrideQualification(fields.find((f: { name: string; defaultValue?: string }) => f.name === 'brideQualification')?.defaultValue || '');
+          setGroomProfession(fields.find((f: { name: string; defaultValue?: string }) => f.name === 'groomProfession')?.defaultValue || '');
+          setBrideProfession(fields.find((f: { name: string; defaultValue?: string }) => f.name === 'brideProfession')?.defaultValue || '');
+          setIncludeRsvp(fields.find((f: { name: string; defaultValue?: boolean }) => f.name === 'includeRsvp')?.defaultValue ?? true);
+          setIncludeAccommodation(fields.find((f: { name: string; defaultValue?: boolean }) => f.name === 'includeAccommodation')?.defaultValue ?? false);
+          setAccommodationDetails(fields.find((f: { name: string; defaultValue?: string }) => f.name === 'accommodationDetails')?.defaultValue || '');
           setWelcomeQuote(welcome);
           setEvents(defaultEvents.map((ev: any, i: number) => ({ id: i, ...ev })));
           setMusicUrl(music);
@@ -110,6 +126,10 @@ export default function BuilderPage({ params }: { params: Promise<{ templateId: 
   };
 
   const handleGeneratePreviewTrigger = async () => {
+    if (includeAccommodation && !accommodationDetails.trim()) {
+      setStep(2);
+      return;
+    }
     // Check auth first
     const token = localStorage.getItem('invitecraft_token');
     if (!token) {
@@ -134,6 +154,15 @@ export default function BuilderPage({ params }: { params: Promise<{ templateId: 
         brideName,
         groomParents,
         brideParents,
+        ...(supportsProfiles ? {
+          groomQualification: groomQualification.trim(),
+          brideQualification: brideQualification.trim(),
+          groomProfession: groomProfession.trim(),
+          brideProfession: brideProfession.trim(),
+        } : {}),
+        includeRsvp,
+        includeAccommodation,
+        accommodationDetails: includeAccommodation ? accommodationDetails.trim() : '',
         welcomeQuote,
         events: events.map(({ id, ...rest }) => rest), // chop local react ID
         musicUrl,
@@ -142,11 +171,10 @@ export default function BuilderPage({ params }: { params: Promise<{ templateId: 
       const res = await api.createPreview(templateId, formData);
       if (res.status === 'success') {
         router.push(`/preview/${res.preview.token}`);
-      } else if (res.code === 'USER_NOT_FOUND') {
+      } else if (['USER_NOT_FOUND', 'AUTH_REQUIRED', 'INVALID_TOKEN'].includes(res.code)) {
         api.logout();
-        alert('Your login session is invalid or has expired. Please verify your phone or email to continue.');
         setAuthStage('INPUT');
-        setAuthError('');
+        setAuthError('Your login session has expired. Please verify your phone or email to continue. Your invitation details are preserved.');
         setPhone('');
         setEmail('');
         setOtpCode('');
@@ -332,6 +360,33 @@ export default function BuilderPage({ params }: { params: Promise<{ templateId: 
                     style={inputStyle}
                   />
                 </div>
+                {supportsProfiles && [
+                  { id: 'groom-qualification', label: "Groom's Qualification", value: groomQualification, setValue: setGroomQualification, placeholder: 'e.g. M.Tech, IIT Bombay' },
+                  { id: 'bride-qualification', label: "Bride's Qualification", value: brideQualification, setValue: setBrideQualification, placeholder: 'e.g. MBBS, M.D' },
+                  { id: 'groom-profession', label: "Groom's Profession", value: groomProfession, setValue: setGroomProfession, placeholder: 'e.g. Software Engineer' },
+                  { id: 'bride-profession', label: "Bride's Profession", value: brideProfession, setValue: setBrideProfession, placeholder: 'e.g. Pediatrician' },
+                ].map(field => (
+                  <div key={field.id}>
+                    <label htmlFor={field.id} className={labelCls}>
+                      {field.label} <span className="text-muted font-normal">(Optional)</span>
+                    </label>
+                    <input
+                      id={field.id}
+                      type="text"
+                      value={field.value}
+                      onChange={e => field.setValue(e.target.value)}
+                      placeholder={field.placeholder}
+                      className={inputCls}
+                      style={inputStyle}
+                      aria-describedby="profile-help"
+                    />
+                  </div>
+                ))}
+                {supportsProfiles && (
+                  <p id="profile-help" className="md:col-span-2 text-xs text-muted">
+                    Leave qualifications and professions blank to remove those lines from the invitation.
+                  </p>
+                )}
                 <div className="md:col-span-2">
                   <label className={labelCls}>Card Welcome Quote</label>
                   <textarea
@@ -455,6 +510,40 @@ export default function BuilderPage({ params }: { params: Promise<{ templateId: 
             </div>
           )}
 
+          {step === 2 && (
+            <fieldset className="border-t border-hairline mt-6 pt-6 flex flex-col gap-4">
+              <legend className="text-base font-semibold text-ink">Optional Sections</legend>
+              <label className="flex items-center gap-3 text-sm text-ink cursor-pointer">
+                <input type="checkbox" checked={includeRsvp} onChange={e => setIncludeRsvp(e.target.checked)} className="h-4 w-4 accent-primary" />
+                Include RSVP Form
+              </label>
+              <label className="flex items-center gap-3 text-sm text-ink cursor-pointer">
+                <input type="checkbox" checked={includeAccommodation} onChange={e => setIncludeAccommodation(e.target.checked)} className="h-4 w-4 accent-primary" aria-controls="accommodation-details" />
+                Include Accommodation Section
+              </label>
+              {includeAccommodation && (
+                <div>
+                  <label htmlFor="accommodation-details" className={labelCls}>Accommodation Details</label>
+                  <textarea
+                    id="accommodation-details"
+                    value={accommodationDetails}
+                    onChange={e => setAccommodationDetails(e.target.value)}
+                    rows={3}
+                    required
+                    aria-invalid={!accommodationDetails.trim()}
+                    aria-describedby="accommodation-help"
+                    className="w-full bg-white border border-hairline py-2.5 px-3.5 text-ink focus:outline-none focus:border-ink text-sm"
+                    style={{ borderRadius: 8 }}
+                    placeholder="Hotel name, booking instructions, and any confirmed room rates"
+                  />
+                  <p id="accommodation-help" className="mt-1 text-xs text-muted">
+                    Enter accommodation details or uncheck this section before generating a preview.
+                  </p>
+                </div>
+              )}
+            </fieldset>
+          )}
+
           {/* STEP 3: Music Selection */}
           {step === 3 && (
             <div className="flex flex-col gap-6">
@@ -539,12 +628,33 @@ export default function BuilderPage({ params }: { params: Promise<{ templateId: 
                     <span className="text-xs text-muted block font-medium mb-0.5">Selected Audio</span>
                     <strong>{musicUrl ? 'Custom Background Music Enabled' : 'Silent Card (No music)'}</strong>
                   </div>
+                  {supportsProfiles && (
+                    <>
+                      <div>
+                        <span className="text-xs text-muted block font-medium mb-0.5">Groom&apos;s Qualification &amp; Profession</span>
+                        <span>{[groomQualification, groomProfession].filter(value => value.trim()).join(', ') || '(Hidden)'}</span>
+                      </div>
+                      <div>
+                        <span className="text-xs text-muted block font-medium mb-0.5">Bride&apos;s Qualification &amp; Profession</span>
+                        <span>{[brideQualification, brideProfession].filter(value => value.trim()).join(', ') || '(Hidden)'}</span>
+                      </div>
+                    </>
+                  )}
+                  <div>
+                    <span className="text-xs text-muted block font-medium mb-0.5">RSVP Form</span>
+                    <strong>{includeRsvp ? 'Included' : 'Hidden'}</strong>
+                  </div>
+                  <div>
+                    <span className="text-xs text-muted block font-medium mb-0.5">Accommodation Section</span>
+                    <strong>{includeAccommodation ? 'Included' : 'Hidden'}</strong>
+                    {includeAccommodation && <p className="mt-1 whitespace-pre-line">{accommodationDetails}</p>}
+                  </div>
                 </div>
               </div>
 
               <div className="mt-2 flex flex-col items-center">
                 <p className="text-sm text-muted text-center max-w-sm mb-2 leading-relaxed" style={{ fontWeight: 400 }}>
-                  Proceeding will generate a time-limited 30-minute watermarked preview. You can review all details and unlock via payment.
+                  Proceeding will generate a time-limited 30-minute preview. You can review all details and publish a shareable invitation without payment.
                 </p>
               </div>
             </div>
