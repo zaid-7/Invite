@@ -1,25 +1,13 @@
 import React from 'react';
 import type { Metadata } from 'next';
+import { headers } from 'next/headers';
+import { fetchInvitationData } from '../../../lib/invitation-server';
+import { getInvitationShareMetadata } from '../../../lib/invitation-share';
 import InvitationClient from './InvitationClient';
 import Link from 'next/link';
 
 interface Props {
   params: Promise<{ slug: string }>;
-}
-
-async function fetchInvitationData(slug: string) {
-  try {
-    const backendUrl = process.env.BACKEND_URL || process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000/api';
-    const res = await fetch(`${backendUrl}/invitations/${slug}`, {
-      cache: 'no-store', // force fetch fresh
-    });
-    if (!res.ok) return null;
-    const body = await res.json();
-    return body.status === 'success' ? body.invitation : null;
-  } catch (err) {
-    console.error('Error fetching invitation on server:', err);
-    return null;
-  }
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -32,18 +20,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
 
-  const titleString = invitation.ogTitle || 'Wedding Celebration Invitation';
-
-  return {
-    title: `${titleString} — InviteCraft`,
-    description: `You have been cordially invited to celebrate with us. View timings, venues, and RSVP online.`,
-    openGraph: {
-      title: titleString,
-      description: `You have been cordially invited to celebrate with us. View timings, venues, and RSVP online.`,
-      locale: 'en_IN',
-      type: 'article',
-    },
-  };
+  const requestHeaders = await headers();
+  const host = requestHeaders.get('x-forwarded-host') || requestHeaders.get('host');
+  if (!process.env.NEXT_PUBLIC_SITE_URL && !host) {
+    throw new Error('A site URL or request host is required for invitation sharing metadata');
+  }
+  const protocol = requestHeaders.get('x-forwarded-proto') || (host?.startsWith('localhost') || host?.startsWith('127.0.0.1') ? 'http' : 'https');
+  const origin = process.env.NEXT_PUBLIC_SITE_URL || `${protocol}://${host}`;
+  return getInvitationShareMetadata(invitation, new URL(`/i/${encodeURIComponent(slug)}`, origin));
 }
 
 export default async function PermanentInvitationPage({ params }: Props) {

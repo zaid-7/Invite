@@ -56,6 +56,28 @@ attribution or accompanying license notices.
 
 ---
 
+## Sharing invitations on WhatsApp
+
+Share the published `/i/[slug]` link, not the temporary `/preview/[token]` link.
+Published pages include server-rendered Open Graph and Twitter metadata with
+the invitation title, first event's date/time/venue, and a personalized
+1200x630 PNG at `/i/[slug]/share-image`. The image uses the renderer's bundled
+font, without Google Fonts requests. Disabled RSVP is not advertised in the
+preview description.
+
+The page and image must be reachable publicly over HTTPS for WhatsApp to fetch
+them; `localhost` links cannot produce a preview for other people. The preview
+URLs normally use the request's public host. If a reverse proxy changes that
+host, set `NEXT_PUBLIC_SITE_URL=https://your-public-domain` in the frontend's
+deployment environment to pin the canonical and image URLs.
+
+Deploy these changes before sharing. WhatsApp caches previews, so previously
+shared links may not update immediately. Deployment authentication, bot blocking,
+or a sleeping Render backend can also prevent its crawler from loading the
+metadata/image. Inactive invitations do not serve a share image.
+
+---
+
 ## Workspace Architecture
 
 ```
